@@ -16,7 +16,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -27,7 +26,6 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 DEBUG = os.environ.get("DJANGO_DEBUG") == "True"
 
 ALLOWED_HOSTS = [os.environ.get("DJANGO_ALLOWED_HOST")]
-
 
 # Application definition
 
@@ -48,6 +46,7 @@ INSTALLED_APPS = [
 
     "community",
     "gamemaster",
+    "blog",
 ]
 
 MIDDLEWARE = [
@@ -81,7 +80,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'uoftpokerclub.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
@@ -91,7 +89,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -110,7 +107,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
@@ -152,6 +148,7 @@ CHANNEL_LAYERS = {
 # Emails
 
 EMAIL_BACKEND = "django_ses.SESBackend"
+
 AWS_ACCESS_KEY_ID = os.environ.get("DJANGO_AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.environ.get("DJANGO_AWS_SECRET_ACCESS_KEY")
 
