@@ -1,0 +1,22 @@
+{% load static %}
+
+
+<div class="box bg-light" id="seat-{{ i }}" data-toggle="tooltip">
+    <div>
+        {% block external %}{% endblock %}
+    </div>
+    <div class="seat-wrapper" id="seat-{{ i }}-wrapper">
+        <div class="row mx-0">
+            <img class="col-4 px-0 rounded" id="seat-{{ i }}-avatar" src="{% static "images/transparent.png" %}"
+                 alt="avatar"/>
+            <div class="col-8 px-0 py-1">
+                <span id="seat-{{ i }}-username"></span>
+                {% block internal %}{% endblock %}
+            </div>
+        </div>
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" id="seat-{{ i }}-progress-bar"
+                 role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+    </div>
+</div>

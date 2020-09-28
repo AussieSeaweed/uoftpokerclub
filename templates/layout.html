@@ -1,13 +1,16 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %} - U of T Poker Club</title>
 
+    {% load static %}
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="{% static "stylesheets/default.css" %}"/>
+
+    {% block stylesheets %}{% endblock %}
 </head>
 <body>
 
@@ -24,7 +27,7 @@
             <div class="collapse navbar-collapse" id="navbar-items">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Games</a>
+                        <a class="nav-link" href="{% url "room-list" %}">Games</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" id="navbar-dropdown" role="button" data-toggle="dropdown"
@@ -32,7 +35,7 @@
                             Community
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbar-dropdown">
-                            <a class="dropdown-item" href="#">Users</a>
+                            <a class="dropdown-item" href="{% url "user-list" %}">Users</a>
                             <a class="dropdown-item" href="#">Organizations</a>
                             <a class="dropdown-item" href="#">Leaderboards</a>
                             <div class="dropdown-divider"></div>
@@ -52,7 +55,7 @@
                 <ul class="navbar-nav ml-auto">
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="#">{{ user.username }}</a>
+                            <a class="nav-link" href="{% url "user-detail" pk=user.id %}">{{ user.username }}</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url "logout" %}?next={{ request.path }}">Logout</a>
@@ -62,7 +65,7 @@
                             <a class="nav-link" href="{% url "login" %}?next={{ request.path }}">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Register</a>
+                            <a class="nav-link" href="{% url "user-create" %}">Register</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -70,33 +73,36 @@
         </div>
     </nav>
 
-    <div class="flex-fill d-flex flex flex-column container-lg bg-white shadow p-4">
-        <header class="jumbotron shadow">
-            <div class="container">
-                <h2>{% block heading %}{% endblock %}</h2>
-                <p>{% block description %}{% endblock %}</p>
-                {% block widgets %}{% endblock %}
-            </div>
-        </header>
-        <main class="flex-fill">
-            {% block content %}{% endblock %}
-        </main>
-        <footer class="text-center border-top pt-2">
-            &copy; 2020 - U of T Poker Club
+    <div class="flex-fill d-flex flex-column container-lg bg-white shadow px-5">
+        <div class="flex-fill py-5">
+            <header class="jumbotron shadow">
+                <div class="container">
+                    <h2>{% block heading %}{% endblock %}</h2>
+                    <p>{% block description %}{% endblock %}</p>
+                    {% block widgets %}{% endblock %}
+                </div>
+            </header>
+            <main class="flex-fill">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+        <footer class="text-center border-top py-3">
+            <span class="mx-auto">&copy; 2020 - U of T Poker Club</span>
         </footer>
     </div>
 </div>
 
 
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"
         integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2"
         crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
         integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
         crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+<script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
         integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
         crossorigin="anonymous"></script>
+<script type="text/javascript" src="{% static "javascripts/default.js" %}"></script>
 
 {% block scripts %}{% endblock %}
 

@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% load django_tables2 %}
+{% load static %}
+
+{% block title %}{{ object.name }}{% endblock %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" href="{% static object.stylesheet_path %}"/>
+
+{% endblock %}
+
+{% block heading %}Room {{ object.name }}{% endblock %}
+
+{% block description %}{{ object.description }}{% endblock %}
+
+{% block content %}
+
+    <div class="box">
+        {% block game %}{% endblock %}
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+
+    <script type="text/javascript">
+        let room;
+
+        import("{% static object.javascript_module_path %}").then((roomModule) => {
+            room = new roomModule.{{ object.model_name }}();
+        });
+    </script>
+
+{% endblock %}

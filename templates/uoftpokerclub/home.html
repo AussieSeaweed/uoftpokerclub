@@ -13,7 +13,7 @@
 
 {% block widgets %}
 
-    <a class="btn btn-primary btn" href="#" role="button">Browse Games</a>
+    <a class="btn btn-primary btn" href="{% url "room-list" %}" role="button">Browse Games</a>
     <a class="btn btn-primary btn" href="#" role="button">Contact Us</a>
 
 {% endblock %}
@@ -22,22 +22,19 @@
 
     <div class="row">
         <div class="col-lg-8">
-            <div class="border border-light rounded shadow p-3 mb-4">
+            <div class="box p-3">
                 <h4>Blog Posts</h4>
                 <hr/>
-
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="border border-light rounded shadow p-3 mb-4">
+            <div class="box p-3">
                 <h4>Ongoing Events</h4>
                 <hr/>
-
             </div>
-            <div class="border border-light rounded shadow p-3 mb-4">
+            <div class="box p-3">
                 <h4>Scheduled Events</h4>
                 <hr/>
-
             </div>
         </div>
     </div>

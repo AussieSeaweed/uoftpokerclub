@@ -1,0 +1,35 @@
+@import "room.css";
+
+.ttt-cell {
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.ttt-cell:hover {
+    background-color: gainsboro;
+}
+
+.ttt-cell[data-index="0"] {
+    background-color: salmon;
+}
+
+.ttt-cell[data-index="0"]:hover {
+    background-color: tomato;
+}
+
+.ttt-cell[data-index="1"] {
+    background-color: cornflowerblue;
+}
+
+.ttt-cell[data-index="1"]:hover {
+    background-color: royalblue;
+}
+
+.ttt-cell[data-index="2"] {
+    background-color: lightgreen;
+}
+
+.ttt-cell[data-index="2"]:hover {
+    background-color: darkseagreen;
+}
+

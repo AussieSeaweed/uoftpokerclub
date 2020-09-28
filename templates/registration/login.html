@@ -8,7 +8,7 @@
 
 {% block content %}
 
-    <div class="border border-light rounded shadow">
+    <div class="box">
         <form class="p-5 w-50 m-auto" method="post">
             {% csrf_token %}
 
@@ -17,7 +17,7 @@
             <input type="submit" class="btn btn-primary" value="Log in"/>
 
             <a class="btn btn-secondary btn" href="{% url "password_reset" %}" role="button">Reset Password</a>
-            <a class="btn btn-secondary btn" href="#" role="button">Register</a>
+            <a class="btn btn-secondary btn" href="{% url "user-create" %}" role="button">Register</a>
         </form>
     </div>
 

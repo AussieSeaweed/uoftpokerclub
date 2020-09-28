@@ -2,8 +2,8 @@ asgiref==3.2.10
 attrs==20.2.0
 autobahn==20.7.1
 Automat==20.2.0
-boto3==1.15.3
-botocore==1.18.3
+boto3==1.15.6
+botocore==1.18.6
 cffi==1.14.3
 channels==2.4.0
 constantly==15.1.0
@@ -13,11 +13,14 @@ Django==3.1.1
 django-annoying==0.10.6
 django-crispy-forms==1.9.2
 django-extra-views==0.13.0
+django-gravatar2==1.4.4
 django-model-utils==4.0.0
+django-picklefield==3.0.1
 django-ses==1.0.3
 django-tables2==2.3.1
+djangorestframework==3.12.1
 future==0.18.2
-gameservice==1.0.0
+gameservice==1.4.0
 hyperlink==20.0.1
 idna==2.10
 incremental==17.5.0
