@@ -11,4 +11,4 @@ class RoomTable(tables.Table):
 
     class Meta:
         model = Room
-        fields = ["id"]
+        fields = ["id", "name", "description", "status"]

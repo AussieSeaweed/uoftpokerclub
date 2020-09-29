@@ -1,4 +1,4 @@
-from django.views import generic
+from django.views.generic import DetailView
 from django_tables2 import SingleTableView
 
 from .models import Room
@@ -13,7 +13,7 @@ class RoomListView(SingleTableView):
         return Room.objects.select_subclasses()
 
 
-class RoomDetailView(generic.DetailView):
+class RoomDetailView(DetailView):
     model = Room
 
     def get_object(self, queryset=None):

@@ -1,5 +1,4 @@
-from django.contrib import admin
-from django.contrib.admin import ModelAdmin, StackedInline
+from django.contrib.admin import register, ModelAdmin, StackedInline
 
 from .models import TicTacToeRoom, Seat
 
@@ -13,7 +12,10 @@ class SeatInline(StackedInline):
     def has_delete_permission(self, request, obj=None):
         return False
 
+    def has_change_permission(self, request, obj=None):
+        return False
 
-@admin.register(TicTacToeRoom)
+
+@register(TicTacToeRoom)
 class RoomAdmin(ModelAdmin):
-    inlines = SeatInline,
+    inlines = [SeatInline]

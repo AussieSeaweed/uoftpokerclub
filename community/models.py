@@ -1,12 +1,12 @@
 from annoying.fields import AutoOneToOneField
 from django.contrib.auth import get_user_model
-from django.db import models
+from django.db.models import Model, CASCADE
 from django.urls import reverse
 from django_gravatar.helpers import get_gravatar_url
 
 
-class Profile(models.Model):
-    user = AutoOneToOneField(get_user_model(), unique=True, on_delete=models.CASCADE)
+class Profile(Model):
+    user = AutoOneToOneField(get_user_model(), unique=True, on_delete=CASCADE)
 
     @property
     def url(self):
@@ -20,15 +20,15 @@ class Profile(models.Model):
         return self.user.username
 
 
-class Config(models.Model):
-    user = AutoOneToOneField(get_user_model(), unique=True, on_delete=models.CASCADE)
+class Config(Model):
+    user = AutoOneToOneField(get_user_model(), unique=True, on_delete=CASCADE)
 
     def __str__(self):
         return self.user.username
 
 
-class Career(models.Model):
-    user = AutoOneToOneField(get_user_model(), unique=True, on_delete=models.CASCADE)
+class Career(Model):
+    user = AutoOneToOneField(get_user_model(), unique=True, on_delete=CASCADE)
 
     def __str__(self):
         return self.user.username

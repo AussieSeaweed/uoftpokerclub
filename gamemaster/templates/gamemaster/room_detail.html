@@ -15,6 +15,18 @@
 
 {% block description %}{{ object.description }}{% endblock %}
 
+{% block widgets %}
+
+    {% if user.is_authenticated %}
+        <button class="btn btn-primary btn" id="command-online" role="button">Connect</button>
+        <button class="btn btn-primary btn" id="command-offline" role="button">Disconnect</button>
+        <button class="btn btn-secondary btn" id="command-away" role="button">Sit Out</button>
+    {% else %}
+        <a class="btn btn-primary btn" href="{% url "login" %}?next={{ request.path }}" role="button">Log in</a>
+    {% endif %}
+
+{% endblock %}
+
 {% block content %}
 
     <div class="box">

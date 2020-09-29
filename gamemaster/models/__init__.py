@@ -1,2 +1,3 @@
 from .room import *
-from .tictactoeroom import *
+from .sequential import *
+from .tictactoe import *

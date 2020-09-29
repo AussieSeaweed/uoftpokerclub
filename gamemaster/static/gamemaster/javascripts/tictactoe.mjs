@@ -1,6 +1,6 @@
-import {Room} from "./room.mjs";
+import {SequentialRoom} from "./sequential.mjs";
 
-class TicTacToeRoom extends Room {
+class TicTacToeRoom extends SequentialRoom {
     constructor() {
         super();
 

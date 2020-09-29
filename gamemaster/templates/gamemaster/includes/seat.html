@@ -10,7 +10,8 @@
             <img class="col-4 px-0 rounded" id="seat-{{ i }}-avatar" src="{% static "images/transparent.png" %}"
                  alt="avatar"/>
             <div class="col-8 px-0 py-1">
-                <span id="seat-{{ i }}-username"></span>
+                <div id="seat-{{ i }}-username"></div>
+                <div id="seat-{{ i }}-status" class="text-danger small font-weight-bold"></div>
                 {% block internal %}{% endblock %}
             </div>
         </div>

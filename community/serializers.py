@@ -1,22 +1,22 @@
 from django.contrib.auth import get_user_model
-from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
 
 from .models import Profile, Career
 
 
-class ProfileSerializer(serializers.ModelSerializer):
+class ProfileSerializer(ModelSerializer):
     class Meta:
         model = Profile
         fields = ["url", "gravatar_url"]
 
 
-class CareerSerializer(serializers.ModelSerializer):
+class CareerSerializer(ModelSerializer):
     class Meta:
         model = Career
         fields = []
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(ModelSerializer):
     profile = ProfileSerializer()
     career = CareerSerializer()
 

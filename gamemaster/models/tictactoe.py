@@ -1,10 +1,10 @@
 from gameservice.tictactoe.game import TicTacToeGame
 
-from .room import Room
+from .sequential import SequentialRoom
 from ..exceptions import GameCreationException
 
 
-class TicTacToeRoom(Room):
+class TicTacToeRoom(SequentialRoom):
     description = "Tic Tac Toe"
     num_seats = 2
 
@@ -12,5 +12,5 @@ class TicTacToeRoom(Room):
         if len(self.users) < 2:
             raise GameCreationException
 
-        self.game = TicTacToeGame(labels=list(user.username for user in self.users))
+        self.game = TicTacToeGame(labels=[user.username for user in self.users])
         self.save()

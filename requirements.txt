@@ -2,8 +2,8 @@ asgiref==3.2.10
 attrs==20.2.0
 autobahn==20.7.1
 Automat==20.2.0
-boto3==1.15.6
-botocore==1.18.6
+boto3==1.15.7
+botocore==1.18.7
 cffi==1.14.3
 channels==2.4.0
 constantly==15.1.0
@@ -11,6 +11,8 @@ cryptography==3.1.1
 daphne==2.5.0
 Django==3.1.1
 django-annoying==0.10.6
+django-background-tasks==1.2.5
+django-compat==1.0.15
 django-crispy-forms==1.9.2
 django-extra-views==0.13.0
 django-gravatar2==1.4.4

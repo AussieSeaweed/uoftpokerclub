@@ -1,32 +1,32 @@
-from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 from community.serializers import UserSerializer
 from .models import Room, Seat
 
 
-class SeatSerializer(serializers.ModelSerializer):
+class SeatSerializer(ModelSerializer):
     user = UserSerializer()
-    player = serializers.SerializerMethodField()
+    player = SerializerMethodField()
 
     def get_player(self, seat):
         return seat.player(self.context["user"])
 
     class Meta:
         model = Seat
-        fields = ["user", "player"]
+        fields = ["user", "player", "status"]
 
 
-class RoomSerializer(serializers.ModelSerializer):
+class RoomSerializer(ModelSerializer):
     seats = SeatSerializer(many=True)
-    actions = serializers.SerializerMethodField()
-    user = serializers.SerializerMethodField()
+    actions = SerializerMethodField()
+    user = SerializerMethodField()
 
     def get_actions(self, room):
         return room.actions(self.context["user"])
 
     def get_user(self, room):
-        return UserSerializer(instance=self.context["user"]).data
+        return UserSerializer(instance=self.context["user"]).data if self.context["user"].is_authenticated else None
 
     class Meta:
         model = Room
-        fields = ["seats", "context", "actions", "user"]
+        fields = ["updated_on", "seats", "context", "actions", "user"]

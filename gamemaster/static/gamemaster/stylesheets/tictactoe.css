@@ -1,4 +1,4 @@
-@import "room.css";
+@import "sequential.css";
 
 .ttt-cell {
     transition: background-color 0.2s;
@@ -18,18 +18,18 @@
 }
 
 .ttt-cell[data-index="1"] {
-    background-color: cornflowerblue;
-}
-
-.ttt-cell[data-index="1"]:hover {
-    background-color: royalblue;
-}
-
-.ttt-cell[data-index="2"] {
     background-color: lightgreen;
 }
 
-.ttt-cell[data-index="2"]:hover {
+.ttt-cell[data-index="1"]:hover {
     background-color: darkseagreen;
+}
+
+.ttt-cell[data-index="2"] {
+    background-color: cornflowerblue;
+}
+
+.ttt-cell[data-index="2"]:hover {
+    background-color: royalblue;
 }
 
