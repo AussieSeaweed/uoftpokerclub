@@ -71,11 +71,7 @@ class Room(Model):
             assert self.game is not None
             return self.restart_timeout if self.game.terminal else None
         except AssertionError:
-            for seat in self.seats.all():
-                if seat.status == "Offline":
-                    return 0
-
-            return None
+            return 0
 
     def actions(self, user):
         try:
@@ -92,6 +88,9 @@ class Room(Model):
             return self.seats.get(user=user)
         else:
             return None
+
+    def create_game(self):
+        raise GameCreationException
 
     def __str__(self):
         return self.name
@@ -128,17 +127,18 @@ class Room(Model):
         except (AssertionError, StopIteration):
             raise RoomCommandException
 
-    def create_game(self):
-        raise GameCreationException
-
     def autoplay(self):
         try:
             assert self.game is None or self.game.terminal
-            self.game = None
 
             for seat in self.seats.all():
                 if seat.status == "Offline":
                     seat.kick()
+
+            try:
+                self.game = self.create_game() if self.game is None else None
+            except GameCreationException:
+                pass
 
             self.save()
         except AssertionError:
@@ -179,10 +179,8 @@ def update_room(sender, instance, created, **kwargs):
 
 def monitor_rooms():
     for room in Room.objects.select_subclasses():
-        try:
-            if room.game is None:
-                room.create_game()
-            elif room.timeout is not None and (room.updated_on + timedelta(seconds=room.timeout)) < datetime.now():
+        if room.timeout is not None and (room.updated_on + timedelta(seconds=room.timeout)) < datetime.now():
+            try:
                 room.autoplay()
-        except (GameCreationException, GameActionException):
-            pass
+            except GameActionException:
+                pass

@@ -12,14 +12,11 @@ class SequentialRoom(Room):
 
     @property
     def timeout(self):
-        if super().timeout is not None:
-            return super().timeout
-
         try:
-            assert self.game is not None and self.game.player is not None
+            assert super().timeout is None and self.game is not None and self.game.player is not None
             return self.nature_timeout if self.game.player.nature else self.player_timeout
         except AssertionError:
-            return None
+            return super().timeout
 
     """Non-Constant Methods"""
 

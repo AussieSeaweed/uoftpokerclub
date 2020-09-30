@@ -8,11 +8,12 @@ class TicTacToeRoom(SequentialRoom):
     description = "Tic Tac Toe"
     num_seats = 2
 
+    """Constant methods/Properties"""
+
     def create_game(self):
-        users = [seat.user for seat in self.seats.all() if seat.status == "Online"]
+        users = list(filter(lambda seat: seat.status == "Online", self.seats.all()))
 
         if len(users) < 2:
             raise GameCreationException
 
-        self.game = TicTacToeGame(labels=[user.username for user in self.users])
-        self.save()
+        return TicTacToeGame(labels=[user.username for user in users])
