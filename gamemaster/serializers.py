@@ -17,16 +17,16 @@ class SeatSerializer(ModelSerializer):
 
 
 class RoomSerializer(ModelSerializer):
+    user = SerializerMethodField()
     seats = SeatSerializer(many=True)
     actions = SerializerMethodField()
-    user = SerializerMethodField()
-
-    def get_actions(self, room):
-        return room.actions(self.context["user"])
 
     def get_user(self, room):
         return UserSerializer(instance=self.context["user"]).data if self.context["user"].is_authenticated else None
 
+    def get_actions(self, room):
+        return room.actions(self.context["user"])
+
     class Meta:
         model = Room
-        fields = ["updated_on", "seats", "context", "actions", "user"]
+        fields = ["config", "user", "seats", "context", "actions"]

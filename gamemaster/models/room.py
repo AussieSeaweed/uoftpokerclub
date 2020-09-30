@@ -1,9 +1,7 @@
-from abc import abstractmethod
-
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.contrib.auth import get_user_model
-from django.db.models import Model, CharField, DateTimeField, ForeignKey, CASCADE, SET_NULL
+from django.db.models import Model, CharField, FloatField, DateTimeField, ForeignKey, CASCADE, SET_NULL
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from gameservice.exceptions import PlayerNotFoundException, ActionNotFoundException
@@ -11,6 +9,7 @@ from model_utils import Choices
 from model_utils.fields import StatusField
 from model_utils.managers import InheritanceManager
 from picklefield.fields import PickledObjectField
+from datetime import timedelta, datetime
 
 from ..exceptions import GameCreationException, GameActionException, RoomCommandException
 
@@ -18,6 +17,7 @@ from ..exceptions import GameCreationException, GameActionException, RoomCommand
 class Room(Model):
     name = CharField(max_length=255, unique=True)
     game = PickledObjectField(blank=True, null=True)
+    restart_timeout = FloatField(default=5)
 
     updated_on = DateTimeField(auto_now=True)
 
@@ -28,7 +28,7 @@ class Room(Model):
     description = None
     num_seats = None
 
-    """Constant Methods"""
+    """Constant Methods/Properties"""
 
     @property
     def stylesheet_path(self):
@@ -58,12 +58,40 @@ class Room(Model):
         except AssertionError:
             return None
 
+    @property
+    def config(self):
+        return {
+            "updated_on": str(self.updated_on),
+            "timeout": self.timeout,
+        }
+
+    @property
+    def timeout(self):
+        try:
+            assert self.game is not None
+            return self.restart_timeout if self.game.terminal else None
+        except AssertionError:
+            for seat in self.seats.all():
+                if seat.status == "Offline":
+                    return 0
+
+            return None
+
     def actions(self, user):
         try:
             assert self.game is not None
             return list(self.game.players[user.username].actions)
         except (AssertionError, PlayerNotFoundException):
             return []
+
+    def seat(self, user):
+        if isinstance(user, str):
+            user = get_user_model().objects.get(username=user)
+
+        if user in self.users:
+            return self.seats.get(user=user)
+        else:
+            return None
 
     def __str__(self):
         return self.name
@@ -73,28 +101,13 @@ class Room(Model):
 
     """Non-Constant Methods"""
 
-    def _seat(self, user):
-        if user in self.users:
-            return self.seats.get(user=user)
-        elif len(self.users) != self.num_seats:
-            seat = next(seat for seat in self.seats.all() if seat.user is None)
-
-            seat.user = user
-            seat.save()
-
-            return seat
-        else:
-            return None
-
     def act(self, user, action):
         try:
             assert self.game is not None and user in self.users
-
             self.game.players[user.username].actions[action].act()
 
-            seat = self._seat(user)
+            seat = self.seat(user)
             seat.status = "Online"
-
             seat.save()
             self.save()
         except (AssertionError, PlayerNotFoundException, ActionNotFoundException):
@@ -102,33 +115,41 @@ class Room(Model):
 
     def command(self, user, command):
         try:
-            seat = self._seat(user)
-            assert seat is not None and command in Seat.STATUS and command is not None
+            assert command in Seat.STATUS
+            seat = self.seat(user)
+
+            if seat is None:
+                seat = next(seat for seat in self.seats.all() if seat.user is None)
+                seat.user = user
 
             seat.status = command
-
             seat.save()
             self.save()
-        except AssertionError:
+        except (AssertionError, StopIteration):
             raise RoomCommandException
 
-    @abstractmethod
     def create_game(self):
-        pass
+        raise GameCreationException
 
-    def destroy_game(self):
-        for seat in self.seats.all():
-            if seat.status == "Offline":
-                seat.kick()
+    def autoplay(self):
+        try:
+            assert self.game is None or self.game.terminal
+            self.game = None
 
-        self.game = None
-        self.save()
+            for seat in self.seats.all():
+                if seat.status == "Offline":
+                    seat.kick()
+
+            self.save()
+        except AssertionError:
+            raise GameActionException
 
 
 class Seat(Model):
     STATUS = Choices("Online", "Away", "Offline")
 
     room = ForeignKey(Room, on_delete=CASCADE, related_name="seats")
+
     user = ForeignKey(get_user_model(), on_delete=SET_NULL, related_name="seats", blank=True, null=True)
     status = StatusField(default=None, blank=True, null=True)
 
@@ -140,7 +161,6 @@ class Seat(Model):
     def player(self, user):
         try:
             assert self.room.game is not None and self.user is not None
-
             return self.room.game.players[self.user.username].private_info if self.user == user else \
                 self.room.game.players[self.user.username].public_info
         except (AssertionError, PlayerNotFoundException):
@@ -154,13 +174,15 @@ def update_room(sender, instance, created, **kwargs):
             for i in range(instance.num_seats):
                 Seat.objects.create(room=instance)
 
-        if instance.game is None:
-            try:
-                instance.create_game()
-            except GameCreationException:
-                pass
-
-        if instance.game is not None and instance.game.terminal:
-            instance.destroy_game()
-
         async_to_sync(get_channel_layer().group_send)(repr(instance), {"type": "send_infoset"})
+
+
+def monitor_rooms():
+    for room in Room.objects.select_subclasses():
+        try:
+            if room.game is None:
+                room.create_game()
+            elif room.timeout is not None and (room.updated_on + timedelta(seconds=room.timeout)) < datetime.now():
+                room.autoplay()
+        except (GameCreationException, GameActionException):
+            pass

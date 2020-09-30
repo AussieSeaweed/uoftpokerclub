@@ -9,7 +9,9 @@ class TicTacToeRoom(SequentialRoom):
     num_seats = 2
 
     def create_game(self):
-        if len(self.users) < 2:
+        users = [seat.user for seat in self.seats.all() if seat.status == "Online"]
+
+        if len(users) < 2:
             raise GameCreationException
 
         self.game = TicTacToeGame(labels=[user.username for user in self.users])

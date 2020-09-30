@@ -1,27 +1,42 @@
 class Room {
     updatedOn = null;
+    config = null;
     user = null;
     seats = [];
     context = null;
     actions = [];
 
     constructor() {
+        $("#command-online").click(() => this.send("/Online"));
+        $("#command-offline").click(() => this.send("/Offline"));
+        $("#command-away").click(() => this.send("/Away"));
+
+        this.connect();
+    }
+
+    connect() {
         this.socket = new WebSocket(getWebsocketProtocol() + "//" + location.host + location.pathname);
+
         this.socket.onmessage = (event) => {
             const data = JSON.parse(event.data);
 
             this.updatedOn = new Date(data.updated_on);
+            this.config = data.config;
+
             this.user = data.user;
             this.seats = data.seats;
             this.context = data.context;
             this.actions = data.actions;
 
+            this.config.updated_on = new Date(this.config.updated_on);
+
+            if (this.config.timeout)
+                this.config.timeout *= 1000;
+
             this.refresh();
         };
 
-        $("#command-online").click(() => this.send("/Online"));
-        $("#command-offline").click(() => this.send("/Offline"));
-        $("#command-away").click(() => this.send("/Away"));
+        this.socket.onclose = (event) => this.connect();
     }
 
     get seat() {
@@ -86,9 +101,8 @@ class Room {
         }
     }
 
-
     updateSeat(i) {
-        $(`#seat-${i}-wrapper`).click(() => open(this.seats[i].user.profile.url));
+        $(`#seat-${i}-wrapper`).off("click").on("click", () => open(this.seats[i].user.profile.url));
         $(`#seat-${i}-avatar`).attr("src", this.seats[i].user.profile.gravatar_url);
         $(`#seat-${i}-username`).text(this.seats[i].user.username);
         $(`#seat-${i}-status`).text(this.seats[i].status === "Online" ? null : this.seats[i].status);
@@ -100,7 +114,7 @@ class Room {
     }
 
     clearSeat(i) {
-        $(`#seat-${i}-wrapper`).click(null);
+        $(`#seat-${i}-wrapper`).off("click");
         $(`#seat-${i}-avatar`).attr("src", "/static/images/transparent.png");
         $(`#seat-${i}-username`).text(null);
         $(`#seat-${i}-status`).text(null);
@@ -113,7 +127,7 @@ class Room {
     }
 
     clearPlayer(i) {
-        $(`#seat-${i}-progress-bar`).css("width", 0);
+        $(`#seat-${i}-progress-bar`).finish().css("width", 0);
     }
 
     updateContext() {
