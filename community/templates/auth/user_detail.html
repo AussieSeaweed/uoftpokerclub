@@ -1,19 +1,47 @@
 {% extends "layout.html" %}
 
 {% load gravatar %}
+{% load django_tables2 %}
 
 {% block title %}{{ object.username }}{% endblock %}
 
 {% block heading %}User {{ object.username }}{% endblock %}
 
+{% block description %}{{ object.profile.description }}{% endblock %}
+
+{% block widgets %}
+
+    {% if object == user %}
+        <hr/>
+        <div class="lead btn-toolbar">
+            <a href="{% url "user-update" %}">
+                <button type="button" class="btn btn-primary mx-1">Edit User</button>
+            </a>
+            <a href="{% url "password_change" %}">
+                <button type="button" class="btn btn-primary mx-1">Change Password</button>
+            </a>
+        </div>
+    {% endif %}
+
+{% endblock %}
+
 {% block content %}
 
     <div class="row">
-        <div class="col-lg-3">
+        <div class="col-md-3">
             <img class="w-100 box" src="{{ object.profile.gravatar_url }}" alt="avatar"/>
         </div>
-        <div class="col-lg-9">
-
+        <div class="col-md-9">
+            <div class="box p-3">
+                <h4>Career</h4>
+                <hr/>
+                <h6>No Limit Hold'em</h6>
+                {{ object.career.nlhestat }}
+            </div>
+            <div class="box">
+                <div class="h4 p-3 m-0 bg-light border rounded-top">Organizations</div>
+                {% render_table table %}
+            </div>
         </div>
     </div>
 

@@ -1,6 +1,6 @@
 from django.contrib.admin import register, ModelAdmin, StackedInline
 
-from .models import TicTacToeRoom, Seat
+from .models import Seat, TicTacToeRoom, NLHERoom
 
 
 class SeatInline(StackedInline):
@@ -17,5 +17,6 @@ class SeatInline(StackedInline):
 
 
 @register(TicTacToeRoom)
+@register(NLHERoom)
 class RoomAdmin(ModelAdmin):
     inlines = [SeatInline]

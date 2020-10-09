@@ -1,0 +1,34 @@
+{% extends "gamemaster/includes/seat.html" %}
+
+{% load static %}
+{% load gamemaster %}
+
+{% block external %}
+
+    {% if num_cards <= 2 %}
+        <div class="w-75 row mx-auto">
+            {% for j in num_cards|times %}
+                <div class="col p-0">
+                    <img class="w-100" id="seat-{{ i }}-card-{{ j }}"
+                         src="{% static "gamemaster/images/cards/null.png" %}" alt="seat-{{ i }}-card-{{ j }}"/>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="row mx-0">
+            {% for j in num_cards|times %}
+                <div class="col p-0">
+                    <img class="w-100" src="{% static "gamemaster/images/cards/null.png" %}"
+                         alt="seat-{{ i }}-hole-card-{{ j }}"/>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block internal %}
+
+    <div class="text-primary small font-weight-bold" id="seat-{{ i }}-stack"></div>
+
+{% endblock %}

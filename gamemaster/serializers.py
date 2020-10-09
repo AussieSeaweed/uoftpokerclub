@@ -13,7 +13,7 @@ class SeatSerializer(ModelSerializer):
 
     class Meta:
         model = Seat
-        fields = ["user", "player", "status"]
+        fields = ["user", "player", "status", "description"]
 
 
 class RoomSerializer(ModelSerializer):

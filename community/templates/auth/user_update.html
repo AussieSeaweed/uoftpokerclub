@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% load crispy_forms_filters %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block heading %}Edit User{% endblock %}
+
+{% block content %}
+
+    <div class="box">
+        <form class="p-5 w-50 m-auto" method="post">
+            {% csrf_token %}
+
+            <p class="font-weight-bold">
+                You can change your profile picture on <a target="_blank" href="https://en.gravatar.com/">Gravatar</a>.
+            </p>
+
+            {% for formset in inlines %}
+                {{ formset|crispy }}
+            {% endfor %}
+
+            {{ form|crispy }}
+
+            <input type="submit" class="btn btn-primary" value="Save"/>
+        </form>
+    </div>
+
+{% endblock %}

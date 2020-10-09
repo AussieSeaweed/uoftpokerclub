@@ -40,7 +40,7 @@
     <script type="text/javascript">
         let room;
 
-        import("{% static object.javascript_module_path %}").then((roomModule) => {
+        import("{% static object.javascript_module_path %}").then(roomModule => {
             room = new roomModule.{{ object.model_name }}();
         });
     </script>

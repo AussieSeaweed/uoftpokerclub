@@ -1,17 +1,19 @@
 {% load static %}
 
 
-<div class="box bg-light" id="seat-{{ i }}" data-toggle="tooltip">
+<div class="text-center" id="seat-{{ i }}">
     <div>
         {% block external %}{% endblock %}
     </div>
-    <div class="seat-wrapper" id="seat-{{ i }}-wrapper">
+    <div class="box bg-light seat-tag" id="seat-{{ i }}-tag" data-toggle="tooltip" data-placement="bottom"
+         data-html="true" data-status="">
         <div class="row mx-0">
-            <img class="col-4 px-0 rounded" id="seat-{{ i }}-avatar" src="{% static "images/transparent.png" %}"
+            <img class="col-4 px-0 rounded" id="seat-{{ i }}-avatar"
+                 src="{% static "gamemaster/images/transparent.png" %}"
                  alt="avatar"/>
             <div class="col-8 px-0 py-1">
                 <div id="seat-{{ i }}-username"></div>
-                <div id="seat-{{ i }}-status" class="text-danger small font-weight-bold"></div>
+                <div class="text-danger small font-weight-bold" id="seat-{{ i }}-status"></div>
                 {% block internal %}{% endblock %}
             </div>
         </div>

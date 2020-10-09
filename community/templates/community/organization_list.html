@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% load django_tables2 %}
+
+{% block title %}All Organizations{% endblock %}
+
+{% block heading %}Browse Organizations{% endblock %}
+
+{% block content %}
+
+    <div class="box">
+        {% render_table table %}
+    </div>
+
+{% endblock %}

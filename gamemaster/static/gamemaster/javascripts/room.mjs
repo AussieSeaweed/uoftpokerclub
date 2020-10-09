@@ -1,5 +1,4 @@
 class Room {
-    updatedOn = null;
     config = null;
     user = null;
     seats = [];
@@ -14,13 +13,29 @@ class Room {
         this.connect();
     }
 
+    get seat() {
+        if (this.user !== null)
+            for (let seat of this.seats)
+                if (seat !== null && seat.user !== null && this.user.username === seat.user.username)
+                    return seat;
+
+        return null;
+    }
+
+    get users() {
+        return this.seats.filter(seat => seat !== null && seat.user !== null).map(seat => seat.user);
+    }
+
+    get players() {
+        return this.seats.filter(seat => seat !== null && seat.player !== null).map(seat => seat.player);
+    }
+
     connect() {
         this.socket = new WebSocket(getWebsocketProtocol() + "//" + location.host + location.pathname);
 
-        this.socket.onmessage = (event) => {
+        this.socket.onmessage = event => {
             const data = JSON.parse(event.data);
 
-            this.updatedOn = new Date(data.updated_on);
             this.config = data.config;
 
             this.user = data.user;
@@ -28,33 +43,17 @@ class Room {
             this.context = data.context;
             this.actions = data.actions;
 
-            this.config.updated_on = new Date(this.config.updated_on);
+            if (this.config) {
+                this.config.updated_on = new Date(this.config.updated_on);
 
-            if (this.config.timeout)
-                this.config.timeout *= 1000;
+                if (this.config.timeout)
+                    this.config.timeout *= 1000;
+            }
 
             this.refresh();
         };
 
-        this.socket.onclose = (event) => this.connect();
-    }
-
-    get seat() {
-        for (let seat of this.seats)
-            if (this.user !== null && seat.user !== null && this.user.username === seat.user.username)
-                return seat;
-
-        return null;
-    }
-
-    get users() {
-        const users = [];
-
-        for (let seat of this.seats)
-            if (seat.user !== null)
-                users.push(seat.user);
-
-        return users;
+        this.socket.onclose = event => this.connect();
     }
 
     send(data) {
@@ -65,7 +64,7 @@ class Room {
         this.updateCommands();
 
         for (let i = 0; i < this.seats.length; ++i) {
-            if (this.seats[i].user === null)
+            if (this.seats[i] === null || this.seats[i].user === null)
                 this.clearSeat(i);
             else
                 this.updateSeat(i);
@@ -102,7 +101,12 @@ class Room {
     }
 
     updateSeat(i) {
-        $(`#seat-${i}-wrapper`).off("click").on("click", () => open(this.seats[i].user.profile.url));
+        $(`#seat-${i}`).finish().animate({opacity: 1});
+        $(`#seat-${i}-tag`).off("click")
+            .on("click", () => open(this.seats[i].user.profile.url))
+            .attr("data-status", this.seats[i].status)
+            .attr("data-original-title", this.seats[i].description);
+
         $(`#seat-${i}-avatar`).attr("src", this.seats[i].user.profile.gravatar_url);
         $(`#seat-${i}-username`).text(this.seats[i].user.username);
         $(`#seat-${i}-status`).text(this.seats[i].status === "Online" ? null : this.seats[i].status);
@@ -114,8 +118,13 @@ class Room {
     }
 
     clearSeat(i) {
-        $(`#seat-${i}-wrapper`).off("click");
-        $(`#seat-${i}-avatar`).attr("src", "/static/images/transparent.png");
+        $(`#seat-${i}`).finish().animate({opacity: 0});
+        $(`#seat-${i}-tag`).off("click")
+            .attr("data-status", "")
+            .attr("data-original-title", "")
+            .tooltip("hide");
+
+        $(`#seat-${i}-avatar`).attr("src", "/static/gamemaster/images/transparent.png");
         $(`#seat-${i}-username`).text(null);
         $(`#seat-${i}-status`).text(null);
 

@@ -1,6 +1,21 @@
 import {Room} from "./room.mjs";
 
 class SequentialRoom extends Room {
+    sounds = {
+        info: new Audio("/static/gamemaster/sounds/info.wav"),
+        alert: new Audio("/static/gamemaster/sounds/alert.wav"),
+        success: new Audio("/static/gamemaster/sounds/success.wav"),
+    };
+
+    refresh() {
+        super.refresh();
+
+        if (this.seat !== null && this.seat.player !== null && this.seat.player.active)
+            this.sounds.alert.play();
+        else
+            this.sounds.info.play();
+    }
+
     updatePlayer(i) {
         super.updatePlayer(i);
 

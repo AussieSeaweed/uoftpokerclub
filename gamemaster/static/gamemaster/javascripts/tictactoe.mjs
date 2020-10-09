@@ -22,7 +22,7 @@ class TicTacToeRoom extends SequentialRoom {
     }
 
     clearContext() {
-        super.updateContext();
+        super.clearContext();
 
         for (let r = 0; r < 3; ++r)
             for (let c = 0; c < 3; ++c)

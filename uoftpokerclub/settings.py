@@ -48,7 +48,6 @@ INSTALLED_APPS = [
 
     "community",
     "gamemaster",
-    "floormaster",
     "blog",
 ]
 

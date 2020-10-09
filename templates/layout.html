@@ -6,6 +6,8 @@
 
     {% load static %}
 
+    <link rel="icon" href="{% static "favicon.ico" %}"/>
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
           integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous"/>
     <link rel="stylesheet" href="{% static "stylesheets/default.css" %}"/>
@@ -36,10 +38,10 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbar-dropdown">
                             <a class="dropdown-item" href="{% url "user-list" %}">Users</a>
-                            <a class="dropdown-item" href="#">Organizations</a>
-                            <a class="dropdown-item" href="#">Leaderboards</a>
+                            <a class="dropdown-item" href="{% url "organization-list" %}">Organizations</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Blog</a>
+                            <a class="dropdown-item" href="#">Events</a>
                         </div>
                     </li>
                     <li class="nav-item">

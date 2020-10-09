@@ -2,7 +2,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import JsonWebsocketConsumer
 
 from .exceptions import GameActionException, RoomCommandException
-from .models import Room
+from .models import Room, Seat
 from .serializers import RoomSerializer
 
 
@@ -19,7 +19,7 @@ class RoomConsumer(JsonWebsocketConsumer):
         async_to_sync(self.channel_layer.group_add)(repr(self.room), self.channel_name)
 
         if self.user in self.room.users:
-            self.room.command(self.user, "Online")
+            self.room.command(self.user, Seat.STATUS.ONLINE)
 
         self.accept()
         self.send_infoset()
@@ -28,7 +28,7 @@ class RoomConsumer(JsonWebsocketConsumer):
         async_to_sync(self.channel_layer.group_discard)(repr(self.room), self.channel_name)
 
         if self.user in self.room.users:
-            self.room.command(self.user, "Offline")
+            self.room.command(self.user, Seat.STATUS.OFFLINE)
 
     def receive_json(self, content, **kwargs):
         try:

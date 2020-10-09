@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, StringRelatedField
 
 from .models import Profile, Career
 
@@ -11,9 +11,11 @@ class ProfileSerializer(ModelSerializer):
 
 
 class CareerSerializer(ModelSerializer):
+    nlhestat = StringRelatedField()
+
     class Meta:
         model = Career
-        fields = []
+        fields = ["nlhestat"]
 
 
 class UserSerializer(ModelSerializer):

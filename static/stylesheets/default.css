@@ -4,3 +4,7 @@
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
     margin-bottom: 1.5rem;
 }
+
+.w-33 {
+    width: 33%;
+}

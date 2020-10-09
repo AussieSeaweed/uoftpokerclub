@@ -21,20 +21,26 @@
 {% block content %}
 
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-md-8">
             <div class="box p-3">
-                <h4>Blog Posts</h4>
-                <hr/>
+                <h4>Recent Posts</h4>
+                {% for post in recent_posts %}
+                    <hr/>
+                {% endfor %}
             </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-md-4">
             <div class="box p-3">
                 <h4>Ongoing Events</h4>
-                <hr/>
+                {% for event in ongoing_events %}
+                    <hr/>
+                {% endfor %}
             </div>
             <div class="box p-3">
                 <h4>Scheduled Events</h4>
-                <hr/>
+                {% for event in scheduled_events %}
+                    <hr/>
+                {% endfor %}
             </div>
         </div>
     </div>
