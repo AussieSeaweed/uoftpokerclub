@@ -8,3 +8,7 @@
 .w-33 {
     width: 33%;
 }
+
+.transparent {
+    opacity: 0;
+}

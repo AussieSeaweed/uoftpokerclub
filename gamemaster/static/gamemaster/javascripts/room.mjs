@@ -11,6 +11,11 @@ class Room {
         $("#command-away").click(() => this.send("/Away"));
 
         this.connect();
+
+        setTimeout(() => {
+            $("#game").animate({opacity: 1});
+            $("#command").animate({opacity: 1});
+        }, 400);
     }
 
     get seat() {

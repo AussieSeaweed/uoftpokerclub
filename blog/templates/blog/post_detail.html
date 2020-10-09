@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% load static %}
+
+{% block title %}{{ object.name }}{% endblock %}
+
+{% block heading %}{{ object.name }} {% if object.draft %}<span class="text-warning">(Draft)</span>{% endif %}{% endblock %}
+
+{% block description %}
+
+    {{ object.description }}
+
+    <p>
+        Category:
+
+        {% if object.parent %}
+            <a href="{% url "category-detail" pk=object.parent.id %}">{{ object.parent }}</a>
+        {% else %}
+            <a href="{% url "blog-root" %}">Blog Root</a>
+        {% endif %}
+    </p>
+
+    <small class="text-body">
+        Created on: {{ object.created_on }}
+        Updated on: {{ object.updated_on }}
+    </small>
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="box p-3">
+        {{ object.content|safe }}
+    </div>
+
+{% endblock %}

@@ -1,8 +1,9 @@
+from itertools import count
+
 from django.contrib.auth import get_user_model
 from django_tables2.columns import Column, LinkColumn
 from django_tables2.tables import Table
 from django_tables2.utils import A
-from itertools import count
 
 from .models import Organization
 

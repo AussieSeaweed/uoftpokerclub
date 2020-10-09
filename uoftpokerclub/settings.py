@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     "django_tables2",
     "django_gravatar",
     "rest_framework",
+    "ckeditor",
+    "ckeditor_uploader",
 
     "community",
     "gamemaster",
@@ -75,6 +77,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                "blog.context_processors.blog"
             ],
         },
     },
@@ -128,9 +132,17 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+# Media files
+
+MEDIA_URL = "/media/"
+
+MEDIA_ROOT = BASE_DIR / "mediafiles"
 
 # Auth
 
@@ -163,3 +175,11 @@ DEFAULT_FROM_EMAIL = "no-reply@uoftpokerclub.com"
 # Tables2
 
 DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap4.html"
+
+# CKEditor
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
+# Blog
+
+NUM_RECENT_POSTS = 5

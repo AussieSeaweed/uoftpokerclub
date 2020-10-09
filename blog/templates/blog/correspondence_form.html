@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% load crispy_forms_filters %}
+
+{% block title %}About Us{% endblock %}
+
+{% block heading %}About Us{% endblock %}
+
+{% block description %}
+
+    You can create a correspondence with us by filling out the form below.
+
+{% endblock %}
+
+{% block widgets %}
+
+    <a class="btn btn-primary btn" target="_blank" href="https://www.facebook.com/uoftpoker/" role="button">
+        Facebook
+    </a>
+    <a class="btn btn-primary btn" target="_blank" href="https://ulife.utoronto.ca/organizations/view/id/127633"
+       role="button">
+        Ulife
+    </a>
+    <a class="btn btn-primary btn" target="_blank" href="https://github.com/AussieSeaweed/uoftpokerclub" role="button">
+        Github
+    </a>
+    <a class="btn btn-primary btn" target="_blank" href="https://discord.gg/BcJ6vsy" role="button">
+        Discord
+    </a>
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="box">
+        <form class="p-5 w-50 m-auto" method="post">
+            {% csrf_token %}
+
+            {{ form|crispy }}
+
+            <input type="submit" class="btn btn-primary" value="Create Correspondence"/>
+        </form>
+    </div>
+
+{% endblock %}

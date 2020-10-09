@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% load static %}
+
+{% block title %}{% if object %}{{ object }}{% else %}Blog Root{% endif %}{% endblock %}
+
+{% block heading %}
+
+    {% if object %}
+        {{ object }}
+    {% else %}
+        Browse Blog
+    {% endif %}
+
+{% endblock %}
+
+{% block description %}
+
+    {% if object %}
+        {{ object.description }}
+    {% else %}
+        You are currently at the root of this blog.
+    {% endif %}
+
+{% endblock %}
+
+{% block widgets %}
+
+    {% if object %}
+        <hr/>
+        Parent:
+
+        {% if object.parent %}
+            <a href="{% url "category-detail" pk=object.parent.id %}">{{ object.parent }}</a>
+        {% else %}
+            <a href="{% url "blog-root" %}">Blog Root</a>
+        {% endif %}
+    {% endif %}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="box p-3">
+                <h4>Posts</h4>
+                {% for post in posts %}
+                    <hr/>
+                    {% include "blog/includes/post_info.html" with post=post %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="box p-3">
+                <h4>Subcategories</h4>
+                {% for category in categories %}
+                    <hr/>
+                    {% include "blog/includes/category_info.html" with category=category %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

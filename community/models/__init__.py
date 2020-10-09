@@ -1,4 +1,4 @@
-from .profile import *
-from .config import *
 from .career import *
+from .config import *
 from .organization import *
+from .profile import *

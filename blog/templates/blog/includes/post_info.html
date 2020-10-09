@@ -1,0 +1,10 @@
+{% load static %}
+
+<a class="text-decoration-none" href="{% url "post-detail" pk=post.id %}">
+    <h6>{{ post.name }}</h6>
+    <p>{{ post.description }}</p>
+    {% if post.thumbnail %}
+        <img class="w-100 rounded" src="{% get_media_prefix %}{{ post.thumbnail }}" alt="thumbnail"/>
+    {% endif %}
+    <small>{{ post.created_on }}</small>
+</a>
