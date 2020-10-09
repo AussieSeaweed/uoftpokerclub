@@ -18,6 +18,11 @@ class Room {
         }, 400);
     }
 
+    /*
+        On seat, users, players, and refresh, seat !== null condition is redundant, because the rest framework always
+        sends non-null values.
+     */
+
     get seat() {
         if (this.user !== null)
             for (let seat of this.seats)
@@ -42,7 +47,6 @@ class Room {
             const data = JSON.parse(event.data);
 
             this.config = data.config;
-
             this.user = data.user;
             this.seats = data.seats;
             this.context = data.context;

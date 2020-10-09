@@ -12,7 +12,9 @@ from ..exceptions import GameCreationException, GameActionException, RoomCommand
 class Room(Model):
     name = CharField(max_length=255, unique=True)
     game = PickledObjectField(blank=True, null=True)
+
     restart_timeout = FloatField(default=5)
+    idle_timeout = FloatField(default=90)
 
     updated_on = DateTimeField(auto_now=True)
 
@@ -203,6 +205,8 @@ class Seat(Model):
 
     user = ForeignKey(get_user_model(), on_delete=SET_NULL, related_name="seats", blank=True, null=True)
     status = StatusField(choices_name="status_list", default=None, blank=True, null=True)
+
+    updated_on = DateTimeField(auto_now=True)
 
     @property
     def description(self):

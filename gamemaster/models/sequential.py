@@ -31,7 +31,15 @@ class SequentialRoom(Room):
             try:
                 assert self.game is not None and self.game.player is not None
 
-                self.game.player.actions[next(iter(self.game.player.actions))].act()
+                player = self.game.player
+                player.actions[next(iter(player.actions))].act()
+
+                if not player.nature:
+                    seat = self.seat(player.label)
+                    seat.status = Seat.STATUS.AWAY
+
+                    seat.save()
+
                 self.save()
             except (AssertionError, StopIteration):
                 raise GameActionException
