@@ -4,7 +4,8 @@
 
 {% block title %}{{ object.name }}{% endblock %}
 
-{% block heading %}{{ object.name }} {% if object.draft %}<span class="text-warning">(Draft)</span>{% endif %}{% endblock %}
+{% block heading %}{{ object.name }}{% if object.draft %} <span class="text-warning">(Draft)</span>
+{% endif %}{% endblock %}
 
 {% block description %}
 
@@ -21,8 +22,10 @@
     </p>
 
     <small class="text-body">
-        Created on: {{ object.created_on }}
-        Updated on: {{ object.updated_on }}
+        Created on: {{ object.created_on }}<br/>
+        {% if object.created_on != object.updated_on %}
+            Updated on: {{ object.updated_on }}
+        {% endif %}
     </small>
 
 {% endblock %}

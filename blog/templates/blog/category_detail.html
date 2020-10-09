@@ -27,14 +27,11 @@
 {% block widgets %}
 
     {% if object %}
-        <hr/>
-        Parent:
-
-        {% if object.parent %}
-            <a href="{% url "category-detail" pk=object.parent.id %}">{{ object.parent }}</a>
+        <a class="btn btn-primary btn" href="{% if object.parent %}
+            {% url "category-detail" pk=object.parent.id %}
         {% else %}
-            <a href="{% url "blog-root" %}">Blog Root</a>
-        {% endif %}
+            {% url "blog-root" %}
+        {% endif %}" role="button">Parent</a>
     {% endif %}
 
 {% endblock %}

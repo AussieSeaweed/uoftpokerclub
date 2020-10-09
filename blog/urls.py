@@ -2,7 +2,6 @@ from django.urls import path
 
 from .views import CategoryDetailView, PostDetailView, CorrespondenceCreateView, CorrespondenceCreateDoneView
 
-
 urlpatterns = [
     path("categories/", CategoryDetailView.as_view(), name="blog-root"),
     path("categories/<int:pk>/", CategoryDetailView.as_view(), name="category-detail"),

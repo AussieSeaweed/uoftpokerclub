@@ -1,15 +1,28 @@
-from django.contrib.admin import register, site
 from django.contrib.admin import ModelAdmin
+from django.contrib.admin import register
 
-from .models import Category, Post, Correspondence, Event
+from .models import Category, Post, Event, Correspondence
 
-site.register(Category)
-site.register(Post)
-site.register(Event)
+
+@register(Category)
+class CategoryAdmin(ModelAdmin):
+    list_display = ["name", "parent"]
+
+
+@register(Post)
+class PostAdmin(ModelAdmin):
+    list_display = ["name", "parent", "draft", "important", "created_on", "updated_on"]
+
+
+@register(Event)
+class EventAdmin(ModelAdmin):
+    list_display = ["name", "start_time", "end_time"]
 
 
 @register(Correspondence)
 class CorrespondenceAdmin(ModelAdmin):
+    list_display = ["subject", "name", "email", "created_on"]
+
     def has_add_permission(self, request):
         return False
 

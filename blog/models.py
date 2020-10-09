@@ -5,6 +5,7 @@ from django.db.models import Model, ForeignKey, CharField, CASCADE, DateTimeFiel
 
 class Category(Model):
     parent = ForeignKey("Category", related_name="categories", on_delete=CASCADE, blank=True, null=True)
+
     name = CharField(max_length=255)
     description = CharField(max_length=255, blank=True)
 
@@ -34,13 +35,13 @@ class Post(Model):
 
 
 class Event(Model):
+    post = ForeignKey(Post, related_name="events", on_delete=CASCADE, blank=True, null=True)
+
     name = CharField(max_length=255)
     description = CharField(max_length=255, blank=True)
 
     start_time = DateTimeField()
     end_time = DateTimeField()
-
-    post = ForeignKey(Post, related_name="events", on_delete=CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.name
