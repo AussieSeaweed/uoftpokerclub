@@ -5,25 +5,14 @@
 
 {% block external %}
 
-    {% if num_cards <= 2 %}
-        <div class="w-75 row mx-auto">
-            {% for j in num_cards|times %}
-                <div class="col p-0">
-                    <img class="w-100" id="seat-{{ i }}-card-{{ j }}"
-                         src="{% static "gamemaster/images/cards/null.png" %}" alt="seat-{{ i }}-card-{{ j }}"/>
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="row mx-0">
-            {% for j in num_cards|times %}
-                <div class="col p-0">
-                    <img class="w-100" src="{% static "gamemaster/images/cards/null.png" %}"
-                         alt="seat-{{ i }}-hole-card-{{ j }}"/>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
+    <div class="{% if object.num_hole_cards <= 2 %}w-75{% endif %} row mx-auto">
+        {% for j in object.num_hole_cards|times %}
+            <div class="col p-0">
+                <img class="w-100" id="seat-{{ i }}-card-{{ j }}"
+                     src="{% static "gamemaster/images/cards/null.png" %}" alt="seat-{{ i }}-card-{{ j }}"/>
+            </div>
+        {% endfor %}
+    </div>
 
 {% endblock %}
 

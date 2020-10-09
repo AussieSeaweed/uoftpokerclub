@@ -20,6 +20,7 @@ class PokerRoom(SequentialRoom):
 
     req_num_players = 2
     poker_description = None
+
     num_hole_cards = 0
     num_board_cards = 0
 

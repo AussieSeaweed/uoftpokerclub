@@ -6,6 +6,7 @@ from .poker import PokerRoom
 class NLHERoom(PokerRoom):
     game_type = NLHEGame
     poker_description = "No-Limit Texas Hold'em"
+
     num_hole_cards = 2
     num_board_cards = 5
 
