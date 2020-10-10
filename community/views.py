@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView
 from django_tables2.views import SingleTableView, SingleTableMixin
@@ -69,3 +70,16 @@ class OrganizationDetailView(SingleTableMixin, DetailView):
 
     def get_table(self, **kwargs):
         return UserTable(self.object.members.all())
+
+    def post(self, request, *args, **kwargs):
+        organization = self.get_object()
+
+        if request.user.is_authenticated:
+            if request.user in organization.members.all():
+                organization.members.remove(request.user)
+            else:
+                organization.members.add(request.user)
+
+            return HttpResponseRedirect(reverse("organization-detail", kwargs={"pk": self.get_object().pk}))
+        else:
+            return HttpResponseForbidden()

@@ -8,6 +8,19 @@
 
 {% block description %}{{ object.description }}{% endblock %}
 
+{% block widgets %}
+
+    {% if user.is_authenticated %}
+        <form method="post">
+            {% csrf_token %}
+
+            <input type="submit" class="btn btn-primary"
+                   value="{% if request.user in object.members.all %}Leave{% else %}Join{% endif %}"/>
+        </form>
+    {% endif %}
+
+{% endblock %}
+
 {% block content %}
 
     <div class="box">

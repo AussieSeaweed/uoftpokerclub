@@ -9,8 +9,8 @@ https://docs.djangoproject.com/en/3.1/howto/deployment/asgi/
 
 import os
 
-from django import setup
 from channels.routing import get_default_application
+from django import setup
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'uoftpokerclub.settings')
 setup()
