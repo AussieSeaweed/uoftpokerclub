@@ -53,9 +53,11 @@ class Room(Model):
             return None
 
     def actions(self, user):
-        if self.game is not None:
+        try:
+            assert self.game is not None
+
             return list(self.game.players[user.username].actions)
-        else:
+        except (AssertionError, PlayerNotFoundException):
             return []
 
     """Django Templates"""
