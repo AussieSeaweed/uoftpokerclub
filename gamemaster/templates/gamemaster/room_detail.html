@@ -40,7 +40,7 @@
 
 {% block scripts %}
 
-    <script type="text/javascript">
+    <script type="module">
         let room;
 
         import("{% static object.javascript_module_path %}").then(roomModule => {
