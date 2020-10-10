@@ -49,7 +49,7 @@ class PokerRoom(SequentialRoom):
 
     @property
     def javascript_module_path(self):
-        return f"gamemaster/javascripts/poker.mjs"
+        return f"gamemaster/javascripts/poker.js"
 
     @property
     def model_name(self):

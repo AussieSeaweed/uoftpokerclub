@@ -1,4 +1,4 @@
-import {SequentialRoom} from "./sequential.mjs";
+import {SequentialRoom} from "./sequential.js";
 
 class PokerRoom extends SequentialRoom {
     constructor() {

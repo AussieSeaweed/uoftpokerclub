@@ -1,4 +1,4 @@
-import {Room} from "./room.mjs";
+import {Room} from "./room.js";
 
 class SequentialRoom extends Room {
     sounds = {

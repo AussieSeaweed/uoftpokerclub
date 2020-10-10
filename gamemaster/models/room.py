@@ -70,7 +70,7 @@ class Room(Model):
 
     @property
     def javascript_module_path(self):
-        return f"gamemaster/javascripts/{self._meta.model_name[:-4]}.mjs"
+        return f"gamemaster/javascripts/{self._meta.model_name[:-4]}.js"
 
     @property
     def model_name(self):
