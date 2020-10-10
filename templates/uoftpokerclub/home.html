@@ -41,6 +41,7 @@
             <div class="box p-3">
                 <h4>Scheduled Events</h4>
                 {% for event in scheduled_events %}
+                    <hr/>
                     {% include "blog/includes/event_info.html" with event=event %}
                 {% endfor %}
             </div>
