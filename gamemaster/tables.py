@@ -10,7 +10,8 @@ class RoomTable(Table):
     description = Column(orderable=False)
     status = Column(orderable=False, accessor="users")
 
-    def render_status(self, value):
+    @staticmethod
+    def render_status(value):
         return f"{len(value)} Online"
 
     class Meta:

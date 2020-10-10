@@ -21,11 +21,11 @@ class SequentialRoom extends Room {
 
         if (this.seats[i].player.active) {
             $(`#seat-${i}-progress-bar`).finish().animate({
-                width: `${Math.floor(Math.max((1 - (Date.now() - room.config.updated_on) / room.config.timeout) * 100, 0))}%`,
+                width: `${Math.floor(Math.max((1 - (Date.now() - room.updated_on) / room.timeout) * 100, 0))}%`,
             }, 0, "linear", function () {
                 $(this).animate({
                     width: 0,
-                }, Math.max(room.config.timeout - (Date.now() - room.config.updated_on), 0));
+                }, Math.max(room.timeout - (Date.now() - room.updated_on), 0));
             });
         } else {
             $(`#seat-${i}-progress-bar`).finish().css("width", 0);

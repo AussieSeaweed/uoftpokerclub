@@ -15,7 +15,7 @@
         Category:
 
         {% if object.parent %}
-            <a href="{% url "category-detail" pk=object.parent.id %}">{{ object.parent }}</a>
+            <a href="{% url "category-detail" pk=object.parent.pk %}">{{ object.parent }}</a>
         {% else %}
             <a href="{% url "blog-root" %}">Blog Root</a>
         {% endif %}

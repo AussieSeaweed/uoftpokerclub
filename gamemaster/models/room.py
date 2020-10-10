@@ -1,12 +1,10 @@
 from django.contrib.auth import get_user_model
-from django.db.models import Model, CharField, FloatField, DateTimeField, ForeignKey, CASCADE, SET_NULL
+from django.db.models import Model, CharField, FloatField, DateTimeField, ForeignKey, BooleanField, CASCADE, SET_NULL
 from gameservice.exceptions import PlayerNotFoundException, ActionNotFoundException
-from model_utils import Choices
-from model_utils.fields import StatusField
 from model_utils.managers import InheritanceManager
 from picklefield.fields import PickledObjectField
 
-from ..exceptions import GameCreationException, GameActionException, RoomCommandException
+from ..exceptions import GameCreationException, GameActionException
 
 
 class Room(Model):
@@ -14,7 +12,6 @@ class Room(Model):
     game = PickledObjectField(blank=True, null=True)
 
     restart_timeout = FloatField(default=5)
-    idle_timeout = FloatField(default=90)
 
     updated_on = DateTimeField(auto_now=True)
 
@@ -24,9 +21,42 @@ class Room(Model):
 
     description = None
     num_seats = None
-
     req_num_players = None
+
     game_type = None
+
+    @property
+    def timeout(self):
+        if self.game is None and (any(seat.user is not None and not seat.status for seat in self.seats.all()) or
+                                  sum(seat.status for seat in self.seats.all()) >= self.req_num_players):
+            return 0
+        elif self.game is not None and self.game.terminal:
+            return self.restart_timeout
+        else:
+            return None
+
+    @property
+    def config(self):
+        return {
+            "description": self.description,
+            "num_seats": self.num_seats,
+            "req_num_players": self.req_num_players,
+        }
+
+    """Game Service Properties"""
+
+    @property
+    def context(self):
+        if self.game is not None:
+            return self.game.context.info
+        else:
+            return None
+
+    def actions(self, user):
+        if self.game is not None:
+            return list(self.game.players[user.username].actions)
+        else:
+            return []
 
     """Django Templates"""
 
@@ -50,10 +80,10 @@ class Room(Model):
 
     @property
     def player_labels(self):
-        labels = [seat.user.username for seat in self.seats.all() if seat.status == Seat.STATUS.ONLINE]
+        labels = [seat.user.username for seat in self.seats.all() if seat.status]
 
         if self.game is not None:
-            for label in list(map(lambda player: player.label, self.game.players))[1:]:
+            for label in [player.label for player in self.game.players][1:]:
                 if label in labels:
                     labels = labels[labels.index(label):] + labels[:labels.index(label)]
                     break
@@ -74,46 +104,11 @@ class Room(Model):
 
         return self.game_type(**game_config)
 
-    """Game Service Properties"""
-
-    @property
-    def context(self):
-        try:
-            assert self.game is not None
-
-            return self.game.context.info
-        except AssertionError:
-            return None
-
-    def actions(self, user):
-        try:
-            assert self.game is not None
-
-            return list(self.game.players[user.username].actions)
-        except (AssertionError, PlayerNotFoundException):
-            return []
-
     """Constant Member Variables/Methods"""
 
     @property
     def users(self):
         return list(seat.user for seat in self.seats.all() if seat.user is not None)
-
-    @property
-    def config(self):
-        return {
-            "updated_on": str(self.updated_on),
-            "timeout": self.timeout,
-        }
-
-    @property
-    def timeout(self):
-        try:
-            assert self.game is not None
-
-            return self.restart_timeout if self.game.terminal else None
-        except AssertionError:
-            return 0
 
     def seat(self, user):
         if isinstance(user, str):
@@ -142,37 +137,33 @@ class Room(Model):
             self.game.players[user.username].actions[action].act()
 
             seat = self.seat(user)
-            seat.status = Seat.STATUS.ONLINE
+            seat.status = True
             seat.save()
             self.save()
         except (AssertionError, PlayerNotFoundException, ActionNotFoundException):
             raise GameActionException
 
-    def command(self, user, command):
+    def toggle(self, user):
         try:
-            assert Seat.STATUS.valid(command) and user.is_authenticated
-
             seat = self.seat(user)
 
             if seat is None:
                 seat = next(seat for seat in self.seats.all() if seat.user is None)
                 seat.user = user
 
-            seat.status = command
+            seat.status = not seat.status
             seat.save()
             self.save()
-        except (AssertionError, StopIteration):
-            raise RoomCommandException
+        except StopIteration:
+            raise GameActionException
 
     def autoplay(self):
         try:
-            assert ((any(seat.status == Seat.STATUS.OFFLINE for seat in self.seats.all()) or
-                     sum(seat.status == Seat.STATUS.ONLINE for seat in self.seats.all()) >= self.req_num_players) and
-                    self.game is None) or (self.game is not None and self.game.terminal)
+            assert self.game is None or self.game.terminal
 
             for seat in self.seats.all():
-                if seat.status == Seat.STATUS.OFFLINE:
-                    seat.kick()
+                if seat.user is not None and not seat.status:
+                    seat.clear()
 
             if self.game is not None:
                 for player in self.game.players:
@@ -190,31 +181,20 @@ class Room(Model):
 
 
 class Seat(Model):
-    class STATUS:
-        ONLINE = "Online"
-        AWAY = "Away"
-        OFFLINE = "Offline"
-
-        @classmethod
-        def valid(cls, status):
-            return status == cls.ONLINE or status == cls.AWAY or status == cls.OFFLINE
-
-    status_list = Choices(STATUS.ONLINE, STATUS.AWAY, STATUS.OFFLINE)
-
     room = ForeignKey(Room, on_delete=CASCADE, related_name="seats")
 
     user = ForeignKey(get_user_model(), on_delete=SET_NULL, related_name="seats", blank=True, null=True)
-    status = StatusField(choices_name="status_list", default=None, blank=True, null=True)
+    status = BooleanField(default=False)
 
     updated_on = DateTimeField(auto_now=True)
 
     @property
-    def description(self):
-        return None if self.user is None else "\n".join(map(str, self.room.stats(self.user.career)))
+    def stats(self):
+        return None if self.user is None else list(map(str, self.room.stats(self.user.career)))
 
-    def kick(self):
+    def clear(self):
         self.user = None
-        self.status = None
+        self.status = False
         self.save()
 
     def player(self, user):

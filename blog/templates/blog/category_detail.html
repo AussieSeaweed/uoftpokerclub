@@ -28,7 +28,7 @@
 
     {% if object %}
         <a class="btn btn-primary btn" href="{% if object.parent %}
-            {% url "category-detail" pk=object.parent.id %}
+            {% url "category-detail" pk=object.parent.pk %}
         {% else %}
             {% url "blog-root" %}
         {% endif %}" role="button">Parent</a>

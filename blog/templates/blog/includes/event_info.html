@@ -1,7 +1,7 @@
 {% load static %}
 
 {% if event.post %}
-    <a class="text-decoration-none" href="{% url "post-detail" pk=event.post.id %}">
+    <a class="text-decoration-none" href="{% url "post-detail" pk=event.post.pk %}">
         <h6>{{ event.name }}</h6>
         <p>{{ event.description }}</p>
         {% if event.post.thumbnail %}

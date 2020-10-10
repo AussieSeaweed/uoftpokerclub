@@ -1,8 +1,8 @@
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import JsonWebsocketConsumer
 
-from .exceptions import GameActionException, RoomCommandException
-from .models import Room, Seat
+from .exceptions import GameActionException
+from .models import Room
 from .serializers import RoomSerializer
 
 
@@ -18,8 +18,8 @@ class RoomConsumer(JsonWebsocketConsumer):
     def connect(self):
         async_to_sync(self.channel_layer.group_add)(repr(self.room), self.channel_name)
 
-        if self.user in self.room.users:
-            self.room.command(self.user, Seat.STATUS.ONLINE)
+        if self.user in self.room.users and not self.room.seat(self.user).status:
+            self.room.toggle(self.user)
 
         self.accept()
         self.send_infoset()
@@ -27,16 +27,16 @@ class RoomConsumer(JsonWebsocketConsumer):
     def disconnect(self, code):
         async_to_sync(self.channel_layer.group_discard)(repr(self.room), self.channel_name)
 
-        if self.user in self.room.users:
-            self.room.command(self.user, Seat.STATUS.OFFLINE)
+        if self.user in self.room.users and self.room.seat(self.user).status:
+            self.room.toggle(self.user)
 
     def receive_json(self, content, **kwargs):
         try:
-            if isinstance(content, str) and content[:1] == "/":
-                self.room.command(self.user, content[1:])
+            if content is None:
+                self.room.toggle(self.user)
             else:
                 self.room.act(self.user, content)
-        except (GameActionException, RoomCommandException):
+        except GameActionException:
             pass
 
     def send_infoset(self, event=None):

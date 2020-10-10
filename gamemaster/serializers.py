@@ -13,7 +13,7 @@ class SeatSerializer(ModelSerializer):
 
     class Meta:
         model = Seat
-        fields = ["user", "player", "status", "description"]
+        fields = ["user", "status", "stats", "player"]
 
 
 class RoomSerializer(ModelSerializer):
@@ -29,4 +29,4 @@ class RoomSerializer(ModelSerializer):
 
     class Meta:
         model = Room
-        fields = ["config", "user", "seats", "context", "actions"]
+        fields = ["user", "updated_on", "timeout", "config", "seats", "context", "actions"]

@@ -18,15 +18,26 @@ class PokerRoom(SequentialRoom):
 
     """Room Variables"""
 
-    req_num_players = 2
     poker_description = None
+
+    @property
+    def description(self):
+        return f"{self.num_seats}-Max {self.poker_description} ({self.starting_stack // self.big_blind} bb)"
+
+    req_num_players = 2
 
     num_hole_cards = 0
     num_board_cards = 0
 
     @property
-    def description(self):
-        return f"{self.num_seats}-Max {self.poker_description} ({self.starting_stack // self.big_blind} bb)"
+    def config(self):
+        return {
+            **super().config,
+            "num_hole_cards": self.num_hole_cards,
+            "num_board_cards": self.num_board_cards,
+        }
+
+    """Django Templates"""
 
     @property
     def template_path(self):
@@ -67,11 +78,3 @@ class PokerRoom(SequentialRoom):
         })
 
         return game_config
-
-    @property
-    def config(self):
-        return {
-            **super().config,
-            "num_hole_cards": self.num_hole_cards,
-            "num_board_cards": self.num_board_cards,
-        }

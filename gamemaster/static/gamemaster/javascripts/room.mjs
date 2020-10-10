@@ -1,43 +1,39 @@
 class Room {
-    config = null;
     user = null;
+    updated_on = null;
+    timeout = null;
+    config = {};
     seats = [];
     context = null;
     actions = [];
 
     constructor() {
-        $("#command-online").click(() => this.send("/Online"));
-        $("#command-offline").click(() => this.send("/Offline"));
-        $("#command-away").click(() => this.send("/Away"));
+        $("#toggle-connect").click(() => this.send(null));
+        $("#toggle-disconnect").click(() => this.send(null));
 
         this.connect();
 
         setTimeout(() => {
             $("#game").animate({opacity: 1});
-            $("#command").animate({opacity: 1});
+            $("#toggle").animate({opacity: 1});
         }, 400);
     }
-
-    /*
-        On seat, users, players, and refresh, seat !== null condition is redundant, because the rest framework always
-        sends non-null values.
-     */
 
     get seat() {
         if (this.user !== null)
             for (let seat of this.seats)
-                if (seat !== null && seat.user !== null && this.user.username === seat.user.username)
+                if (seat.user !== null && this.user.username === seat.user.username)
                     return seat;
 
         return null;
     }
 
     get users() {
-        return this.seats.filter(seat => seat !== null && seat.user !== null).map(seat => seat.user);
+        return this.seats.filter(seat => seat.user !== null).map(seat => seat.user);
     }
 
     get players() {
-        return this.seats.filter(seat => seat !== null && seat.player !== null).map(seat => seat.player);
+        return this.seats.filter(seat => seat.player !== null).map(seat => seat.player);
     }
 
     connect() {
@@ -46,23 +42,18 @@ class Room {
         this.socket.onmessage = event => {
             const data = JSON.parse(event.data);
 
-            this.config = data.config;
             this.user = data.user;
+            this.updated_on = new Date(data.updated_on);
+            this.timeout = data.timeout * 1000;
+            this.config = data.config;
             this.seats = data.seats;
             this.context = data.context;
             this.actions = data.actions;
 
-            if (this.config) {
-                this.config.updated_on = new Date(this.config.updated_on);
-
-                if (this.config.timeout)
-                    this.config.timeout *= 1000;
-            }
-
             this.refresh();
         };
 
-        this.socket.onclose = event => this.connect();
+        this.socket.onclose = event => setTimeout(this.connect());
     }
 
     send(data) {
@@ -70,10 +61,10 @@ class Room {
     }
 
     refresh() {
-        this.updateCommands();
+        this.updateTogglers();
 
         for (let i = 0; i < this.seats.length; ++i) {
-            if (this.seats[i] === null || this.seats[i].user === null)
+            if (this.seats[i].user === null)
                 this.clearSeat(i);
             else
                 this.updateSeat(i);
@@ -90,23 +81,17 @@ class Room {
             this.updateActions();
     }
 
-    updateCommands() {
+    updateTogglers() {
         if ((this.seat === null && this.seats.length !== this.users.length) ||
-            (this.seat !== null && this.seat.status !== "Online"))
-            $("#command-online").show();
+            (this.seat !== null && !this.seat.status))
+            $("#toggle-connect").show();
         else
-            $("#command-online").hide();
+            $("#toggle-connect").hide();
 
-        if (this.seat !== null && this.seat.status === "Online") {
-            $("#command-offline").show();
-            $("#command-away").show();
-        } else if (this.seat !== null && this.seat.status === "Away") {
-            $("#command-offline").show();
-            $("#command-away").hide();
-        } else {
-            $("#command-offline").hide();
-            $("#command-away").hide();
-        }
+        if (this.seat !== null && this.seat.status)
+            $("#toggle-disconnect").show();
+        else
+            $("#toggle-disconnect").hide();
     }
 
     updateSeat(i) {
@@ -118,7 +103,7 @@ class Room {
 
         $(`#seat-${i}-avatar`).attr("src", this.seats[i].user.profile.gravatar_url);
         $(`#seat-${i}-username`).text(this.seats[i].user.username);
-        $(`#seat-${i}-status`).text(this.seats[i].status === "Online" ? null : this.seats[i].status);
+        $(`#seat-${i}-status`).text(this.seats[i].status ? null : "Away");
 
         if (this.seats[i].player === null)
             this.clearPlayer(i);

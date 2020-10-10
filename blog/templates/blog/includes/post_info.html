@@ -1,6 +1,6 @@
 {% load static %}
 
-<a class="text-decoration-none" href="{% url "post-detail" pk=post.id %}">
+<a class="text-decoration-none" href="{% url "post-detail" pk=post.pk %}">
     <h6>{{ post.name }}</h6>
     <p>{{ post.description }}</p>
     {% if post.thumbnail %}

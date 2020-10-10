@@ -1,6 +1,6 @@
 from django.db.models import FloatField
 
-from .room import Room, Seat
+from .room import Room
 from ..exceptions import GameActionException
 
 
@@ -8,7 +8,7 @@ class SequentialRoom(Room):
     player_timeout = FloatField(default=30)
     nature_timeout = FloatField(default=1)
 
-    """Constant Methods/Properties"""
+    """Room Variables"""
 
     @property
     def timeout(self):
@@ -18,7 +18,7 @@ class SequentialRoom(Room):
             if self.game.player.nature:
                 return self.nature_timeout
             else:
-                return 0 if self.seat(self.game.player.label).status != Seat.STATUS.ONLINE else self.player_timeout
+                return self.player_timeout if self.seat(self.game.player.label).status else 0
         except AssertionError:
             return super().timeout
 
@@ -36,8 +36,7 @@ class SequentialRoom(Room):
 
                 if not player.nature:
                     seat = self.seat(player.label)
-                    seat.status = Seat.STATUS.AWAY
-
+                    seat.status = False
                     seat.save()
 
                 self.save()
