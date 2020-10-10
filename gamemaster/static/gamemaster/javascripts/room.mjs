@@ -99,7 +99,7 @@ class Room {
         $(`#seat-${i}-tag`).off("click")
             .on("click", () => open(this.seats[i].user.profile.url))
             .attr("data-status", this.seats[i].status)
-            .attr("data-original-title", this.seats[i].description);
+            .attr("data-original-title", this.seats[i].stats.join("<br/>"));
 
         $(`#seat-${i}-avatar`).attr("src", this.seats[i].user.profile.gravatar_url);
         $(`#seat-${i}-username`).text(this.seats[i].user.username);
