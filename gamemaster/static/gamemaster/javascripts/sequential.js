@@ -1,5 +1,3 @@
-import {Room} from "./room.js";
-
 class SequentialRoom extends Room {
     sounds = {
         info: new Audio("/static/gamemaster/sounds/info.wav"),
@@ -32,5 +30,3 @@ class SequentialRoom extends Room {
         }
     }
 }
-
-export {SequentialRoom};

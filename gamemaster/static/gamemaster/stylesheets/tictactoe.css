@@ -1,5 +1,3 @@
-@import "sequential.css";
-
 .ttt-cell {
     transition: background-color 0.2s;
     cursor: pointer;

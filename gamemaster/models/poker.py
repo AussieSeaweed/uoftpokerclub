@@ -41,19 +41,25 @@ class PokerRoom(SequentialRoom):
 
     @property
     def template_path(self):
-        return f"gamemaster/poker{self.num_seats}room_detail.html"
+        return f"gamemaster/poker{self.num_seats}.html"
 
     @property
-    def stylesheet_path(self):
-        return f"gamemaster/stylesheets/poker.css"
+    def stylesheet_paths(self):
+        return [
+            *super().stylesheet_paths,
+            "gamemaster/stylesheets/poker.css",
+        ]
 
     @property
-    def javascript_module_path(self):
-        return f"gamemaster/javascripts/poker.js"
+    def javascript_paths(self):
+        return [
+            *super().javascript_paths,
+            "gamemaster/javascripts/poker.js",
+        ]
 
     @property
     def model_name(self):
-        return f"PokerRoom"
+        return "PokerRoom"
 
     """Constant methods/Properties"""
 

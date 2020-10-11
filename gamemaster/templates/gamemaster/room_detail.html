@@ -7,7 +7,9 @@
 
 {% block stylesheets %}
 
-    <link rel="stylesheet" href="{% static object.stylesheet_path %}"/>
+    {% for stylesheet_path in object.stylesheet_paths %}
+        <link rel="stylesheet" href="{% static stylesheet_path %}"/>
+    {% endfor %}
 
 {% endblock %}
 
@@ -32,7 +34,7 @@
 
     <div class="box">
         <div class="transparent" id="game">
-            {% block game %}{% endblock %}
+            {% include object.template_path %}
         </div>
     </div>
 
@@ -40,12 +42,12 @@
 
 {% block scripts %}
 
-    <script type="text/javascript">
-        let room;
+    {% for javascript_path in object.javascript_paths %}
+        <script type="text/javascript" src="{% static javascript_path %}"></script>
+    {% endfor %}
 
-        import("{% static object.javascript_module_path %}").then(roomModule => {
-            room = new roomModule.{{ object.model_name }}();
-        });
+    <script type="text/javascript">
+        const room = new {{ object.model_name }}();
     </script>
 
 {% endblock %}

@@ -15,9 +15,7 @@ class RoomListView(SingleTableView):
 
 class RoomDetailView(DetailView):
     model = Room
-
-    def get_template_names(self):
-        return self.get_object().template_path
+    template_name = "gamemaster/room_detail.html"
 
     def get_object(self, queryset=None):
         return Room.objects.get_subclass(pk=self.kwargs["pk"])

@@ -1,0 +1,106 @@
+{% load static %}
+{% load gamemaster %}
+
+<div class="my-4">
+    <div class="row mx-0">
+        <div class="col-3">
+            {% block seat-1 %}{% endblock %}
+        </div>
+        <div class="col-3">
+            {% block seat-2 %}{% endblock %}
+        </div>
+        <div class="col-3">
+            {% block seat-3 %}{% endblock %}
+        </div>
+        <div class="col-3">
+            {% block seat-4 %}{% endblock %}
+        </div>
+    </div>
+    <div class="row mx-0">
+        <div class="col-3 d-flex flex-column justify-content-center">
+            {% block seat-0 %}{% endblock %}
+        </div>
+        <div class="col-6 d-flex flex-column justify-content-center">
+            <div class="box bg-light mx-0 my-4 rounded rounded-pill">
+                <div class="row mx-0">
+                    <div class="col-2 p-1 mx-auto">
+                        {% block felt-1 %}{% endblock %}
+                    </div>
+                    <div class="col-2 p-1 mx-auto">
+                        {% block felt-2 %}{% endblock %}
+                    </div>
+                    <div class="col-2 p-1 mx-auto">
+                        {% block felt-3 %}{% endblock %}
+                    </div>
+                    <div class="col-2 p-1 mx-auto">
+                        {% block felt-4 %}{% endblock %}
+                    </div>
+                </div>
+                <div class="row mx-0">
+                    <div class="col-2 p-1 d-flex align-items-center">
+                        {% block felt-0 %}{% endblock %}
+                    </div>
+                    <div class="col-8">
+                        <div class="text-center text-primary small font-weight-bold">Pot: <span id="pot"></span>
+                        </div>
+                        <div class="row p-0 mx-0">
+                            {% for i in object.num_board_cards|times %}
+                                <div class="col p-0">
+                                    <img class="w-100" id="board-card-{{ i }}"
+                                         src="{% static "gamemaster/images/cards/null.png" %}"
+                                         alt="board-card-{{ i }}"/>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-2 p-1 d-flex align-items-center">
+                        {% block felt-5 %}{% endblock %}
+                    </div>
+                </div>
+                <div class="row mx-0">
+                    <div class="col-2 p-1 mx-auto">
+                        {% block felt-8 %}{% endblock %}
+                    </div>
+                    <div class="col-2 p-1 mx-auto">
+                        {% block felt-7 %}{% endblock %}
+                    </div>
+                    <div class="col-2 p-1 mx-auto">
+                        {% block felt-6 %}{% endblock %}
+                    </div>
+                    <div class="col-2 mx-auto"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-3 d-flex flex-column justify-content-center">
+            {% block seat-5 %}{% endblock %}
+        </div>
+    </div>
+    <div class="row mx-0">
+        <div class="col-3">
+            {% block seat-8 %}{% endblock %}
+        </div>
+        <div class="col-3">
+            {% block seat-7 %}{% endblock %}
+        </div>
+        <div class="col-3">
+            {% block seat-6 %}{% endblock %}
+        </div>
+        <div class="col-3" id="action">
+            <div class="d-flex flex-row">
+                <label for="range-put" class="flex-fill px-1">
+                    <input type="range" class="form-control-range" id="action-put-range"/>
+                </label>
+            </div>
+            <button class="w-100 btn btn-danger btn my-1" id="action-put" role="button">
+                <span id="action-put-label"></span>
+                <span id="action-put-amount"></span>
+            </button>
+            <button class="w-100 btn btn-warning btn my-1" id="action-continue" role="button">
+                <span id="action-continue-label"></span>
+            </button>
+            <button class="w-100 btn btn-info btn my-1" id="action-surrender" role="button">
+                <span id="action-surrender-label"></span>
+            </button>
+        </div>
+    </div>
+</div>

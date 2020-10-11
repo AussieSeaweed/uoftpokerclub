@@ -8,6 +8,22 @@ class SequentialRoom(Room):
     player_timeout = FloatField(default=30)
     nature_timeout = FloatField(default=1)
 
+    """Django Templates"""
+
+    @property
+    def stylesheet_paths(self):
+        return [
+            *super().stylesheet_paths,
+            "gamemaster/stylesheets/sequential.css",
+        ]
+
+    @property
+    def javascript_paths(self):
+        return [
+            *super().javascript_paths,
+            "gamemaster/javascripts/sequential.js",
+        ]
+
     """Room Variables"""
 
     @property

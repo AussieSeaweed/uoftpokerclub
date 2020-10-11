@@ -1,5 +1,3 @@
-import {SequentialRoom} from "./sequential.js";
-
 class PokerRoom extends SequentialRoom {
     constructor() {
         super();
@@ -145,5 +143,3 @@ class PokerRoom extends SequentialRoom {
         return `/static/gamemaster/images/cards/${card}.png`;
     }
 }
-
-export {PokerRoom};

@@ -1,5 +1,3 @@
-import {SequentialRoom} from "./sequential.js";
-
 class TicTacToeRoom extends SequentialRoom {
     constructor() {
         super();
@@ -29,5 +27,3 @@ class TicTacToeRoom extends SequentialRoom {
                 $(`#board-${r}-${c}`).attr("data-index", null);
     }
 }
-
-export {TicTacToeRoom};

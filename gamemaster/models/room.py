@@ -64,15 +64,15 @@ class Room(Model):
 
     @property
     def template_path(self):
-        return f"gamemaster/{self._meta.model_name}_detail.html"
+        return f"gamemaster/{self._meta.model_name[:-4]}.html"
 
     @property
-    def stylesheet_path(self):
-        return f"gamemaster/stylesheets/{self._meta.model_name[:-4]}.css"
+    def stylesheet_paths(self):
+        return ["gamemaster/stylesheets/room.css"]
 
     @property
-    def javascript_module_path(self):
-        return f"gamemaster/javascripts/{self._meta.model_name[:-4]}.js"
+    def javascript_paths(self):
+        return ["gamemaster/javascripts/room.js"]
 
     @property
     def model_name(self):
