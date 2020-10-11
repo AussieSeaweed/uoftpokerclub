@@ -29,7 +29,7 @@ class Stat(Model):
         if payoff > 0:
             self.wins += payoff
         elif payoff < 0:
-            self.losses -= payoff
+            self.losses += payoff
         else:
             self.ties += 1
 
