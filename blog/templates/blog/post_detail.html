@@ -4,8 +4,11 @@
 
 {% block title %}{{ object.name }}{% endblock %}
 
-{% block heading %}{{ object.name }}{% if object.draft %} <span class="text-warning">(Draft)</span>
-{% endif %}{% endblock %}
+{% block heading %}
+
+    {{ object.name }}{% if object.draft %} <span class="text-warning">(Draft)</span>{% endif %}
+
+{% endblock %}
 
 {% block description %}
 
