@@ -1,6 +1,14 @@
-from django.contrib.admin import site
+from django.contrib.admin import site, register, ModelAdmin, StackedInline
 
-from .models import Organization, Career
+from .models import Organization, Career, NLHEStat
 
 site.register(Organization)
-site.register(Career)
+
+
+class NLHEStatInline(StackedInline):
+    model = NLHEStat
+
+
+@register(Career)
+class NLHEStatAdmin(ModelAdmin):
+    inlines = [NLHEStatInline]
