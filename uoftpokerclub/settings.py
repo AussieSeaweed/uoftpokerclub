@@ -20,12 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "DEFAULT_SECRET_KEY")
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'DEFAULT_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DJANGO_DEBUG") == "True"
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1").split()
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '127.0.0.1').split()
 
 # Application definition
 
@@ -37,20 +37,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    "channels",
-    "django_ses",
-    "extra_views",
-    "crispy_forms",
-    "annoying",
-    "django_tables2",
-    "django_gravatar",
-    "rest_framework",
-    "ckeditor",
-    "ckeditor_uploader",
+    'annoying',
+    'ckeditor',
+    'ckeditor_uploader',
+    'crispy_forms',
+    'django_gravatar',
+    'django_ses',
+    'django_sos',
+    'extra_views',
+    'rest_framework',
 
-    "community",
-    "gamemaster",
-    "blog",
+    'blog',
+    'community',
+    'gamemaster',
 ]
 
 MIDDLEWARE = [
@@ -77,8 +76,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-
-                "blog.context_processors.blog"
             ],
         },
     },
@@ -119,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = "America/Toronto"
+TIME_ZONE = 'America/Toronto'
 
 USE_I18N = True
 
@@ -132,54 +129,40 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / 'static',
 ]
 
 # Media files
 
-MEDIA_URL = "/media/"
+MEDIA_URL = '/media/'
 
-MEDIA_ROOT = BASE_DIR / "mediafiles"
+MEDIA_ROOT = BASE_DIR / 'mediafiles'
 
 # Auth
 
-LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/"
-
-# Crispy forms
-
-CRISPY_TEMPLATE_PACK = "bootstrap4"
-
-# Channels
-
-ASGI_APPLICATION = "uoftpokerclub.routing.application"
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
-}
-
-# Emails
-
-EMAIL_BACKEND = "django_ses.SESBackend"
-
-AWS_ACCESS_KEY_ID = os.environ.get("DJANGO_AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = os.environ.get("DJANGO_AWS_SECRET_ACCESS_KEY")
-
-DEFAULT_FROM_EMAIL = "no-reply@uoftpokerclub.com"
-
-# Tables2
-
-DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap4.html"
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 # CKEditor
 
-CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+
+# Crispy forms
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# Django SES
+
+EMAIL_BACKEND = 'django_ses.SESBackend'
+
+AWS_ACCESS_KEY_ID = os.environ.get('DJANGO_AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('DJANGO_AWS_SECRET_ACCESS_KEY')
+
+DEFAULT_FROM_EMAIL = 'no-reply@uoftpokerclub.com'
 
 # Blog
 
-NUM_RECENT_POSTS = 5
+RECENT_POST_COUNT = 5
