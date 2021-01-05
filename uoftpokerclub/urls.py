@@ -13,23 +13,16 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf import settings
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
 from django.views import generic
-from django.views.static import serve
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("accounts/", include("django.contrib.auth.urls")),
+    path('accounts/', include('django.contrib.auth.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
 
-    path("community/", include("community.urls")),
-    path("gamemaster/", include("gamemaster.urls")),
-    path("blog/", include("blog.urls")),
+    path('gamemaster/', include('gamemaster.urls')),
 
-    path("", generic.TemplateView.as_view(template_name="uoftpokerclub/home.html"), name="home"),
+    path('', generic.TemplateView.as_view(template_name='uoftpokerclub/home.html'), name='home'),
 ]
-
-if settings.DEBUG:
-    urlpatterns.append(path(f"{settings.MEDIA_URL[1:]}<path:path>", serve, {'document_root': settings.MEDIA_ROOT}))

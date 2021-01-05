@@ -1,30 +1,10 @@
-from gameservice.tictactoe.game import TicTacToeGame
+from gameframe.tictactoe import TicTacToeGame
 
-from .sequential import SequentialRoom
+from gamemaster.models.sequential import SequentialRoom
+
+__all__ = ['TicTacToeRoom']
 
 
 class TicTacToeRoom(SequentialRoom):
-    description = "Tic Tac Toe"
-    num_seats = 2
-
-    req_num_players = 2
-    game_type = TicTacToeGame
-
-    """Django Templates"""
-
-    @property
-    def stylesheet_paths(self):
-        return [
-            *super().stylesheet_paths,
-            "gamemaster/stylesheets/tictactoe.css",
-        ]
-
-    @property
-    def javascript_paths(self):
-        return [
-            *super().javascript_paths,
-            "gamemaster/javascripts/tictactoe.js",
-        ]
-
-    class Meta:
-        verbose_name = "Tic Tac Toe Room"
+    def create_game(self):
+        return TicTacToeGame()

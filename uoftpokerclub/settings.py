@@ -47,8 +47,6 @@ INSTALLED_APPS = [
     'extra_views',
     'rest_framework',
 
-    'blog',
-    'community',
     'gamemaster',
 ]
 

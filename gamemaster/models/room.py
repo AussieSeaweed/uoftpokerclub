@@ -1,209 +1,68 @@
+from __future__ import annotations
+
 from django.contrib.auth import get_user_model
-from django.db.models import Model, CharField, FloatField, DateTimeField, ForeignKey, BooleanField, CASCADE, SET_NULL
-from gameservice.exceptions import PlayerNotFoundException, ActionNotFoundException
+from django.db import models
+from gameframe.game import Game, Actor
 from model_utils.managers import InheritanceManager
 from picklefield.fields import PickledObjectField
+from datetime import datetime
+from collections.abc import Mapping
+from typing import Any, Generic, Optional, TypeVar
+from django.contrib.auth.models import User
 
-from ..exceptions import GameCreationException, GameActionException
+__all__ = ['Room', 'Seat']
+
+G = TypeVar('G', bound=Game)
 
 
-class Room(Model):
-    name = CharField(max_length=255, unique=True)
-    game = PickledObjectField(blank=True, null=True)
+class Room(models.Model, Generic[G]):
+    objects: InheritanceManager = InheritanceManager()
 
-    restart_timeout = FloatField(default=5)
+    name: str = models.CharField(max_length=255, unique=True)
+    timeout: float = models.FloatField()
+    updated_on: datetime = models.DateTimeField(auto_now=True)
 
-    updated_on = DateTimeField(auto_now=True)
+    game: G = PickledObjectField(blank=True, null=True)
 
-    objects = InheritanceManager()
-
-    """Room Variables"""
-
-    description = None
-    num_seats = None
-    req_num_players = None
-
-    game_type = None
-
-    @property
-    def timeout(self):
-        if self.game is None and (any(seat.user is not None and not seat.status for seat in self.seats.all()) or
-                                  sum(seat.status for seat in self.seats.all()) >= self.req_num_players):
-            return 0
-        elif self.game is not None and self.game.terminal:
-            return self.restart_timeout
-        else:
-            return None
-
-    @property
-    def config(self):
-        return {
-            "description": self.description,
-            "num_seats": self.num_seats,
-            "req_num_players": self.req_num_players,
-        }
-
-    """Game Service Properties"""
-
-    @property
-    def context(self):
-        if self.game is not None:
-            return self.game.context.info
-        else:
-            return None
-
-    def actions(self, user):
-        try:
-            assert self.game is not None
-
-            return list(self.game.players[user.username].actions)
-        except (AssertionError, PlayerNotFoundException):
-            return []
-
-    """Django Templates"""
-
-    @property
-    def template_path(self):
-        return f"gamemaster/{self._meta.model_name[:-4]}.html"
-
-    @property
-    def stylesheet_paths(self):
-        return ["gamemaster/stylesheets/room.css"]
-
-    @property
-    def javascript_paths(self):
-        return ["gamemaster/javascripts/room.js"]
-
-    @property
-    def model_name(self):
-        return self._meta.object_name
-
-    """Game Creation"""
-
-    @property
-    def player_labels(self):
-        labels = [seat.user.username for seat in self.seats.all() if seat.status]
-
-        if self.game is not None:
-            for label in [player.label for player in self.game.players][1:]:
-                if label in labels:
-                    labels = labels[labels.index(label):] + labels[:labels.index(label)]
-                    break
-
-        return labels
-
-    @property
-    def game_config(self):
-        return {
-            "labels": self.player_labels
-        }
-
-    def create_game(self):
-        game_config = self.game_config
-
-        if len(game_config["labels"]) < self.req_num_players:
-            raise GameCreationException
-
-        return self.game_type(**game_config)
-
-    """Constant Member Variables/Methods"""
-
-    @property
-    def users(self):
-        return list(seat.user for seat in self.seats.all() if seat.user is not None)
-
-    def seat(self, user):
-        if isinstance(user, str):
-            user = get_user_model().objects.get(username=user)
-
-        if user in self.users:
-            return self.seats.get(user=user)
-        else:
-            return None
-
-    def stats(self, career):
-        return []
-
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
-    def __repr__(self):
-        return f"room_{self.id}"
+    def information_set(self, user: User) -> Mapping[str, Any]:
+        information_set: dict[str, Any] = {'seats': list(map(lambda seat: seat.information, self.seats))}
 
-    """Non-Constant Methods"""
+        if self.game is not None:
+            if self.seat(user) is not None and self.seat(user).index is not None:
+                player: Actor = self.game.players[self.seat(user).index]
+            else:
+                player: Actor = self.game.nature
 
-    def act(self, user, action):
-        try:
-            assert self.game is not None and user in self.users
+            information_set['information_set'] = player.information_set
 
-            self.game.players[user.username].actions[action].act()
+        return information_set
 
-            seat = self.seat(user)
-            seat.status = True
-            seat.save()
-            self.save()
-        except (AssertionError, PlayerNotFoundException, ActionNotFoundException):
-            raise GameActionException
+    def seat(self, user: User) -> Optional[Seat]:
+        for seat in self.seats:
+            if seat.user == user:
+                return seat
+        else:
+            return None
 
-    def toggle(self, user):
-        try:
-            seat = self.seat(user)
+    def update(self, user: User) -> None:
+        pass
 
-            if seat is None:
-                seat = next(seat for seat in self.seats.all() if seat.user is None)
-                seat.user = user
-
-            seat.status = not seat.status
-            seat.save()
-            self.save()
-        except StopIteration:
-            raise GameActionException
-
-    def autoplay(self):
-        try:
-            assert self.game is None or self.game.terminal
-
-            for seat in self.seats.all():
-                if seat.user is not None and not seat.status:
-                    seat.clear()
-
-            if self.game is not None:
-                for player in self.game.players:
-                    for stat in self.stats(get_user_model().objects.get(username=player.label).career):
-                        stat.update(player.payoff)
-
-            try:
-                self.game = self.create_game()
-            except GameCreationException:
-                self.game = None
-
-            self.save()
-        except AssertionError:
-            raise GameActionException
+    def create_game(self) -> G:
+        pass
 
 
-class Seat(Model):
-    room = ForeignKey(Room, on_delete=CASCADE, related_name="seats")
+class Seat(models.Model):
+    room: Room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='seats')
+    user: User = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, related_name='seats', blank=True, null=True)
 
-    user = ForeignKey(get_user_model(), on_delete=SET_NULL, related_name="seats", blank=True, null=True)
-    status = BooleanField(default=False)
-
-    updated_on = DateTimeField(auto_now=True)
+    index: int = models.IntegerField(blank=True, null=True)
 
     @property
-    def stats(self):
-        return None if self.user is None else list(map(str, self.room.stats(self.user.career)))
-
-    def clear(self):
-        self.user = None
-        self.status = False
-        self.save()
-
-    def player(self, user):
-        try:
-            assert self.room.game is not None and self.user is not None
-
-            return self.room.game.players[self.user.username].private_info if self.user == user else \
-                self.room.game.players[self.user.username].public_info
-        except (AssertionError, PlayerNotFoundException):
-            return None
+    def information(self) -> Mapping[str, Any]:
+        return {
+            'username': self.user.username,
+            'index': self.index,
+        }

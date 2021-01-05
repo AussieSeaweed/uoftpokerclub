@@ -1,8 +1,0 @@
-<a class="text-decoration-none" href="{% url "category-detail" pk=category.pk %}">
-    <h6>{{ category.name }}</h6>
-    <p>{{ category.description }}</p>
-    <small>
-        Subcategories: {{ category.categories.all|length }}<br/>
-        Posts: {{ category.posts.all|length }}
-    </small>
-</a>
