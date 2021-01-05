@@ -1,0 +1,3 @@
+class SequentialRoom extends Room {
+
+}

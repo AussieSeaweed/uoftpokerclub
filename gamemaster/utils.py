@@ -1,7 +1,7 @@
-import json
+from json import JSONEncoder
 from typing import Any
 
 
-class InformationSetJSONEncoder(json.JSONEncoder):
+class InformationSetJSONEncoder(JSONEncoder):
     def default(self, o: Any) -> Any:
         return str(o)
