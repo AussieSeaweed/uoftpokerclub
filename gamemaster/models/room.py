@@ -1,47 +1,27 @@
-from __future__ import annotations
-
-from abc import ABC, abstractmethod
-from collections import defaultdict
-from collections.abc import Mapping, MutableSequence, Sequence
-from datetime import datetime
-from typing import Any, Generic, Optional, TypeVar
-
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
 from django.db import models
-from gameframe.game import Actor, Game
+from model_utils.managers import InheritanceManager
 from picklefield.fields import PickledObjectField
+from itertools import count
 
 from gamemaster.exceptions import GameCreationException, NoEmptySeatException, SeatNotFoundException
-
-__all__: Sequence[str] = ['Seat', 'Room']
-
-G = TypeVar('G', bound=Game)
 
 
 class Seat:
     def __init__(self):
-        self.__index: Optional[int] = None
-        self.__user_id: Optional[int] = None
+        self.index = None
+        self.__user_id = None
 
     @property
-    def index(self) -> Optional[int]:
-        return self.__index
-
-    @index.setter
-    def index(self, index: Optional[int]) -> None:
-        self.__index = index
-
-    @property
-    def user(self) -> Optional[User]:
+    def user(self):
         return None if self.__user_id is None else get_user_model().objects.get(self.__user_id)
 
     @user.setter
-    def user(self, user: Optional[User]) -> None:
+    def user(self, user):
         self.__user_id = None if user is None else user.id
 
     @property
-    def information(self) -> Mapping[str, Any]:
+    def information(self):
         return {
             'index': self.index,
             'user': None if self.user is None else {
@@ -50,56 +30,57 @@ class Seat:
         }
 
 
-class Room(models.Model, Generic[G], ABC):
-    name: str = models.CharField(max_length=255, unique=True)
-    timeout: float = models.FloatField()
-    updated_on: datetime = models.DateTimeField(auto_now=True)
+class Room(models.Model):
+    objects = InheritanceManager()
 
-    game: Optional[G] = PickledObjectField(blank=True, null=True)
-    seats: MutableSequence[Seat] = PickledObjectField(default=lambda: defaultdict(Seat))
+    name = models.CharField(max_length=255, unique=True)
+    timeout = models.FloatField(default=1)
+    updated_on = models.DateTimeField(auto_now=True)
 
-    seat_count: int
+    game = PickledObjectField(blank=True, null=True)
+    _seats = PickledObjectField(blank=True, null=True)
 
-    def __str__(self) -> str:
+    def __str__(self):
         return self.name
 
     @property
-    def user_count(self) -> int:
-        count: int = 0
+    def seats(self):
+        if self._seats is None:
+            self._seats = [Seat() for _ in range(self.seat_count)]
+            self.save()
 
-        for i in range(self.seat_count):
-            if self.seats[i].user is not None:
-                count += 1
-
-        return count
+        return self._seats
 
     @property
-    def empty_seat(self) -> Seat:
-        for i in range(self.seat_count):
-            if self.seats[i].user is None:
-                return self.seats[i]
+    def user_count(self):
+        return sum(seat.user is not None for seat in self.seats)
 
-        raise NoEmptySeatException
+    @property
+    def empty_seat(self):
+        try:
+            return next(seat.user is None for seat in self.seats)
+        except StopIteration:
+            raise NoEmptySeatException
 
-    def seat(self, user: User) -> Seat:
-        for i in range(self.seat_count):
-            if self.seats[i].user == user:
-                return self.seats[i]
+    @property
+    def seat_count(self):
+        raise NotImplemented
+
+    def seat(self, user):
+        for seat in self.seats:
+            if seat.user == user:
+                return seat
 
         raise SeatNotFoundException
 
-    def data(self, user: User) -> Mapping[str, Any]:
-        data: dict[str, Any] = {'seats': [self.seats[i].information for i in range(self.seat_count)]}
+    def data(self, user):
+        data = {'seats': [self.seats[i].information for i in range(self.seat_count)]}
 
         if self.game is not None:
-            index: Optional[int]
-
             try:
-                index = self.seat(user).index
+                player = self.game.players[self.seat(user).index]
             except SeatNotFoundException:
-                index = None
-
-            player: Actor = self.game.nature if index is None else self.game.players[self.seat(user).index]
+                player = self.game.nature
 
             data['information_set'] = player.information_set
         else:
@@ -107,15 +88,14 @@ class Room(models.Model, Generic[G], ABC):
 
         return data
 
-    def update(self) -> bool:
-        updated: bool = False
+    def update(self):
+        updated = False
 
         if self.game is not None and self.game.terminal:
             self.game = None
 
-            for i in range(self.seat_count):
-                self.seats[i].user = None
-                self.seats[i].index = None
+            for seat in self.seats:
+                seat.index = None
 
             updated = True
 
@@ -123,12 +103,8 @@ class Room(models.Model, Generic[G], ABC):
             try:
                 self.game = self.create_game()
 
-                count: int = 0
-
-                for i in range(self.seat_count):
-                    if self.seats[i].user is not None:
-                        self.seats[i].index = None
-                        count += 1
+                for seat, index in zip(filter(lambda seat: seat.user is not None, self.seats), count()):
+                    seat.index = index
 
                 updated = True
             except GameCreationException:
@@ -136,10 +112,8 @@ class Room(models.Model, Generic[G], ABC):
 
         return updated
 
-    @abstractmethod
-    def create_game(self) -> G:
-        pass
+    def create_game(self):
+        raise NotImplemented
 
     class Meta:
-        abstract: bool = True
-        verbose_name: str = 'Room'
+        verbose_name = 'Room'

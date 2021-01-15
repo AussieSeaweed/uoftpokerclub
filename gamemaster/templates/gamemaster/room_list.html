@@ -1,0 +1,9 @@
+{% extends 'layout.html' %}
+
+{% block title %}Rooms{% endblock %}
+
+{% block content %}
+    {% for room in object_list %}
+        {{ room }}
+    {% endfor %}
+{% endblock %}

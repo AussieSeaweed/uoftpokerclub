@@ -38,9 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'annoying',
+    'channels',
     'ckeditor',
     'ckeditor_uploader',
-    'crispy_forms',
     'django_gravatar',
     'django_ses',
     'django_sos',
@@ -144,13 +144,19 @@ MEDIA_ROOT = BASE_DIR / 'mediafiles'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
+# Channels
+
+ASGI_APPLICATION = 'uoftpokerclub.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
 # CKEditor
 
 CKEDITOR_UPLOAD_PATH = 'uploads/'
-
-# Crispy forms
-
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Django SES
 
@@ -160,7 +166,3 @@ AWS_ACCESS_KEY_ID = os.environ.get('DJANGO_AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('DJANGO_AWS_SECRET_ACCESS_KEY')
 
 DEFAULT_FROM_EMAIL = 'no-reply@uoftpokerclub.com'
-
-# Blog
-
-RECENT_POST_COUNT = 5

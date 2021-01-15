@@ -1,8 +1,3 @@
-from collections.abc import Sequence
-
-__all__: Sequence[str] = ['GameMasterException', 'GameCreationException', 'SeatNotFoundException', 'NoEmptySeatException']
-
-
 class GameMasterException(Exception):
     pass
 

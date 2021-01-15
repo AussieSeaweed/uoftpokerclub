@@ -22,7 +22,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
 
-    path('gm/', include('gamemaster.urls')),
+    path('gamemaster/', include(('gamemaster.urls', 'gamemaster'), namespace='gamemaster')),
 
     path('', generic.TemplateView.as_view(template_name='uoftpokerclub/home.html'), name='home'),
 ]

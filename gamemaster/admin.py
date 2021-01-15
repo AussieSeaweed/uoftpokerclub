@@ -1,3 +1,8 @@
-from django.contrib import admin
+from django.contrib.admin import register, ModelAdmin
 
-# Register your models here.
+from gamemaster.models import TicTacToeRoom
+
+
+@register(TicTacToeRoom)
+class RoomAdmin(ModelAdmin):
+    pass
