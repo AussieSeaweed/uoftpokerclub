@@ -6,23 +6,50 @@
 
     {% load static %}
 
-    <link rel="icon" href="{% static "favicon.ico" %}"/>
+    <link rel="icon" href="{% static 'favicon.ico' %}"/>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static "stylesheets/default.css" %}"/>
+    <link rel="stylesheet" href="{% static 'stylesheets/default.css' %}"/>
 
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
 
-{% block content %}
-{% endblock %}
+<div class="d-flex flex-column min-vh-100 text-white bg-dark" id="wrapper">
+    <header>
+        <nav class="container d-flex justify-content-between navbar navbar-dark navbar-expand">
+            <a class="navbar-brand" href="{% url 'home' %}">U of T Poker Club</a>
+            <div class="navbar-nav">
+                <a class="nav-link" href="#">Rooms</a>
+                {% if user.is_staff %}
+                    <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+                {% endif %}
+            </div>
+            <div class="navbar-nav">
+                {% if user.is_authenticated %}
+                    <a class="nav-link" href="#">{{ user.username }}</a>
+                    <a class="nav-link" href="{% url 'logout' %}?next={{ request.path }}">Logout</a>
+                {% else %}
+                    <a class="nav-link" href="{% url 'login' %}?next={{ request.path }}">Login</a>
+                    <a class="nav-link" href="#">Register</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="text-center text-white-50 mt-auto p-3">
+        &copy; {% now 'Y' %} - U of T Poker Club
+    </footer>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
         crossorigin="anonymous"></script>
-<script type="text/javascript" src="{% static "javascripts/default.js" %}"></script>
+<script src="{% static 'scripts/paper-full.min.js' %}"></script>
+<script src="{% static 'scripts/main.js' %}"></script>
 
 {% block scripts %}{% endblock %}
 

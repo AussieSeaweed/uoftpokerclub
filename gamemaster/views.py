@@ -12,7 +12,6 @@ class RoomListView(ListView):
 
 class RoomDetailView(DetailView):
     model = Room
-    template_name = 'gamemaster/room_detail.html'
 
     def get_object(self, queryset=None):
         return Room.objects.get_subclass(pk=self.kwargs['pk'])

@@ -19,7 +19,7 @@ django-model-utils==4.1.1
 django-picklefield==3.0.1
 django-rest-framework==0.1.0
 django-ses==1.0.3
-django-sos==0.0.6
+django-sos==0.0.1.dev0
 djangorestframework==3.12.2
 future==0.18.2
 gameframe==0.0.1.dev1
