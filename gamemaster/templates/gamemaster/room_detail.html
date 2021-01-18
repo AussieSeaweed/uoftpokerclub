@@ -3,5 +3,5 @@
 {% block title %}Room {{ object }}{% endblock %}
 
 {% block content %}
-    <canvas id="gameCanvas" resize></canvas>
+    {% include 'gamemaster/room.html' with room=object %}
 {% endblock %}

@@ -66,6 +66,10 @@ class Room(models.Model):
     def seat_count(self):
         raise NotImplemented
 
+    @property
+    def game_name(self):
+        raise NotImplemented
+
     def seat(self, user):
         for seat in self.seats:
             if seat.user == user:

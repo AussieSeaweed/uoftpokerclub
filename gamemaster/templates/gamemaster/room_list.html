@@ -3,7 +3,20 @@
 {% block title %}Rooms{% endblock %}
 
 {% block content %}
-    {% for room in object_list %}
-        {{ room }}
-    {% endfor %}
+    <div class="row">
+        {% for room in object_list %}
+            <div class="col-4">
+                <div class="card bg-secondary">
+                    <div class="card-header">
+                        {% include 'gamemaster/room.html' with room=room %}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Room {{ room.name }}</h5>
+                        <p class="card-text">Game: {{ room.game_name }}</p>
+                        <a href="{% url 'gamemaster:room-detail' pk=room.pk %}" class="btn btn-primary">Join Game</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

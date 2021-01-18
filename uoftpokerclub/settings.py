@@ -37,14 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'annoying',
     'channels',
-    'ckeditor',
-    'ckeditor_uploader',
     'django_gravatar',
     'django_ses',
     'django_sos',
-    'extra_views',
     'rest_framework',
 
     'gamemaster',

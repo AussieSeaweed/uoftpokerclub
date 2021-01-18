@@ -9,6 +9,10 @@ class TicTacToeRoom(SequentialRoom):
     def seat_count(self):
         return 2
 
+    @property
+    def game_name(self):
+        return 'Tic Tac Toe'
+
     def create_game(self):
         if self.user_count == 2:
             return TicTacToeGame()
