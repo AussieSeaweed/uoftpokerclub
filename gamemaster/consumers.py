@@ -2,12 +2,10 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import JsonWebsocketConsumer
 
 from gamemaster.models import Room
-from gamemaster.utils import InformationSetJSONEncoder
+from gamemaster.serializers import RoomSerializer
 
 
 class RoomConsumer(JsonWebsocketConsumer):
-    information_set_encoder = InformationSetJSONEncoder()
-
     @property
     def user(self):
         return self.scope['user']
@@ -42,4 +40,4 @@ class RoomConsumer(JsonWebsocketConsumer):
         #     pass
 
     def send_information_set(self, event=None):
-        self.send_json(self.information_set_encoder.encode(self.room.data(self.user)))
+        self.send_json(RoomSerializer(self.room.data(self.user), context={'user': self.user}).data)

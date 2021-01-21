@@ -38,18 +38,10 @@ class Room(models.Model):
     updated_on = models.DateTimeField(auto_now=True)
 
     game = PickledObjectField(blank=True, null=True)
-    _seats = PickledObjectField(blank=True, null=True)
+    seats = PickledObjectField(blank=True, null=True)
 
-    def __str__(self):
-        return self.name
-
-    @property
-    def seats(self):
-        if self._seats is None:
-            self._seats = [Seat() for _ in range(self.seat_count)]
-            self.save()
-
-        return self._seats
+    def __repr__(self):
+        return f'<{self.game_name}: {self.name}>'
 
     @property
     def user_count(self):
@@ -77,23 +69,13 @@ class Room(models.Model):
 
         raise SeatNotFoundException
 
-    def data(self, user):
-        data = {'seats': [self.seats[i].information for i in range(self.seat_count)]}
-
-        if self.game is not None:
-            try:
-                player = self.game.players[self.seat(user).index]
-            except SeatNotFoundException:
-                player = self.game.nature
-
-            data['information_set'] = player.information_set
-        else:
-            data['information_set'] = None
-
-        return data
-
     def update(self):
         updated = False
+
+        if self.seats is None:
+            self.seats = [Seat() for _ in range(self.seat_count)]
+
+            updated = True
 
         if self.game is not None and self.game.terminal:
             self.game = None

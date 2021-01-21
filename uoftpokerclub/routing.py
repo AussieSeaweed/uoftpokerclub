@@ -4,5 +4,5 @@ from django.urls import path
 import gamemaster.routing
 
 websocket_urlpatterns = [
-    path('gamemaster/', URLRouter(gamemaster.routing.websocket_urlpatterns)),
+    path('', URLRouter(gamemaster.routing.websocket_urlpatterns)),
 ]

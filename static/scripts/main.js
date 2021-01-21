@@ -1,1 +1,3 @@
-const websocket_protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+function createWebsocketUrl(websocketPath) {
+    return (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + websocketPath; // TODO: TEST WITHOUT PROTOCOL AND HOST
+}

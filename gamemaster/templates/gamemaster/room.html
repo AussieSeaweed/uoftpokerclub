@@ -1,1 +1,5 @@
-<canvas id="room-{{ room.pk }}" resize></canvas>
+{% load static %}
+
+<canvas id="canvas-{{ room.pk }}" data-websocket-path="{% url "gamemaster:room-detail" pk=room.pk %}"
+        data-game-name="{{ room.game_name }}" resize></canvas>
+<script type="text/paperscript" src="{% static 'gamemaster/scripts/room.js' %}" canvas="canvas-{{ room.pk }}"></script>
