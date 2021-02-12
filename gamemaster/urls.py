@@ -4,5 +4,5 @@ from gamemaster.views import RoomDetailView, RoomListView
 
 urlpatterns = [
     path('', RoomListView.as_view(), name='room-list'),
-    path('<int:pk>/', RoomDetailView.as_view(), name='room-detail'),
+    path('<str:pk>/', RoomDetailView.as_view(), name='room-detail'),
 ]

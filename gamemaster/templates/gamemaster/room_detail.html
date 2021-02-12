@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 
-{% block title %}Room {{ object }}{% endblock %}
+{% block title %}Room {{ object.name }}{% endblock %}
 
 {% block content %}
     {% include 'gamemaster/room.html' with room=object %}

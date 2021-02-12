@@ -1,13 +1,12 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from json import dumps
 
 from gamemaster.models import Room
 from gamemaster.exceptions import SeatNotFoundException
-from gamemaster.utils import InformationSetJSONEncoder
+from gamemaster.utils import DefaultToStrJSONEncoder
 
 
 class RoomSerializer(ModelSerializer):
-    information_set_encoder = InformationSetJSONEncoder()
-
     game = SerializerMethodField()
     seats = SerializerMethodField()
 
@@ -18,7 +17,7 @@ class RoomSerializer(ModelSerializer):
             except SeatNotFoundException:
                 player = room.game.nature
 
-            return self.information_set_encoder.encode(player.information_set)
+            return dumps(player.information_set, cls=DefaultToStrJSONEncoder)
         else:
             return None
 

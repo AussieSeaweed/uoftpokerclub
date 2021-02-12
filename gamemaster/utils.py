@@ -1,6 +1,6 @@
 from json import JSONEncoder
 
 
-class InformationSetJSONEncoder(JSONEncoder):
+class DefaultToStrJSONEncoder(JSONEncoder):
     def default(self, o):
         return str(o)

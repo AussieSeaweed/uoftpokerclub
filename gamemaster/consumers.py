@@ -40,4 +40,4 @@ class RoomConsumer(JsonWebsocketConsumer):
         #     pass
 
     def send_information_set(self, event=None):
-        self.send_json(RoomSerializer(self.room.data(self.user), context={'user': self.user}).data)
+        self.send_json(RoomSerializer(self.room, context={'user': self.user}).data)

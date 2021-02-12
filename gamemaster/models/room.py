@@ -41,7 +41,7 @@ class Room(models.Model):
     seats = PickledObjectField(blank=True, null=True)
 
     def __repr__(self):
-        return f'<{self.game_name}: {self.name}>'
+        return f'room-{self.pk}'
 
     @property
     def user_count(self):

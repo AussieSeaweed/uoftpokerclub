@@ -1,19 +1,25 @@
-function Room() {
+class Room {
+    constructor(context, webSocketURL) {
+        this.context = context;
+        this.webSocketURL = webSocketURL;
+        this.socket = null;
 
+        this.connect();
+        this.setup();
+    }
+
+    connect() {
+        this.socket = new WebSocket(this.webSocketURL);
+
+        this.socket.onmessage = event => this.update(JSON.parse(event.data));
+        this.socket.onclose = () => this.connect(); // TODO: TRY JUST '... = this.connect;'
+    }
+
+    setup() {
+
+    }
+
+    update(data) {
+
+    }
 }
-
-function SequentialRoom() {
-
-}
-
-function TicTacToeRoom() {
-
-}
-
-function setup() {
-    var canvas = document.getElementById(view._id);
-    var gameName = canvas.getAttribute('data-game-name');
-    var websocketURL = createWebsocketUrl(canvas.getAttribute('data-websocket-path'));
-}
-
-var game;
