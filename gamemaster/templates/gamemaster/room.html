@@ -1,4 +1,4 @@
 {% load static %}
 
 <canvas id="canvas-{{ room.pk }}" data-game-name="{{ room.game_name }}"
-        data-websocket-path="{% url "gamemaster:room-detail" pk=room.pk %}" resize></canvas>
+        data-websocket-path="{% url 'gamemaster:room-detail' pk=room.pk %}" resize></canvas>
