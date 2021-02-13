@@ -1,7 +1,7 @@
 asgiref
 channels
-Django
 daphne
+Django
 django-gravatar2
 django-model-utils
 django-picklefield
