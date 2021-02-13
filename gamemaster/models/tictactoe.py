@@ -1,10 +1,10 @@
-from gameframe.tictactoe import TicTacToeGame
+from gameframe.tictactoe import TTTGame
 
 from gamemaster.exceptions import GameCreationException
 from gamemaster.models.sequential import SequentialRoom
 
 
-class TicTacToeRoom(SequentialRoom):
+class TTTRoom(SequentialRoom):
     @property
     def seat_count(self):
         return 2
@@ -15,7 +15,7 @@ class TicTacToeRoom(SequentialRoom):
 
     def create_game(self):
         if self.user_count == 2:
-            return TicTacToeGame()
+            return TTTGame()
         else:
             raise GameCreationException
 
